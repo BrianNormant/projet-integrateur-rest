@@ -23,7 +23,7 @@
 <div class="container mt-5">
   <div class="row">
     <div class="col-sm-12">
-      <p>Page d'accueil du projet 6, test modification</p>
+      <p>Page d'accueil du projet 6, test modification, Voici une modif par git</p>
     </div>
   </div>
 </div>
