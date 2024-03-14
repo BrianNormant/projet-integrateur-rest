@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import { LoginPage } from "./pages/LoginPage";
 
 export default function Home() {
   
@@ -14,18 +15,6 @@ export default function Home() {
         <LoginPage onClick={setIsLoggedIn}/>
       )}
   </>
-  )
-}
-
-interface LoginPageProps {
-  onClick: (x: boolean) => void
-}
-
-function LoginPage( {...props}: LoginPageProps ) {
-  return (
-    <>
-      <button onClick={() => props.onClick(true)}>{"Login"}</button>
-    </>
   )
 }
 
