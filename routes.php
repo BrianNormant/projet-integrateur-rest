@@ -9,6 +9,7 @@ get('/', 'index.php');
 get('/index.php', 'index.php');
 get('/api/help', '/api/help.php');
 get('/api/users', '/api/users.php');
+get('/api/stations', '/api/stations.php');
 
 put('/api/login/$user', '/api/login.php');
 

@@ -12,6 +12,11 @@ api/help : affiche cette page
 api/users : Listes des utilisateurs
 	format: [ { "user_name", "mail", "company" }, ... ]
 
+api/stations : Listes des stations et leurs positions sur le reseaux
+	format : [ { "name", "pos_x", "pos_y" }, ... ]
+
+api/rails : Listes des rails et leur stations de connections
+	format : [ { "con1", "con2" } ]
 
 
 PUT
@@ -23,5 +28,7 @@ POST
 api/check_login : vérification d'un token valide
 	?token
 	code 200 si valid 404 sinon
+
+
 END;
 ?>
