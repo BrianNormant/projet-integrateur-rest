@@ -17,3 +17,5 @@ foreach($routes as list($method, $url, $endpoint)) {
 	$method($url, $endpoint);
 	$method("/projet6" . $url, $endpoint);
 }
+
+?>
