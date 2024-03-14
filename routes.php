@@ -5,15 +5,21 @@ require_once __DIR__.'/router.php';
 define("LOCAL", "/");
 define("WEB", "/projet6/");
 
-get('/', 'index.php');
-get('/index.php', 'index.php');
-get('/api/help', '/api/help.php');
-get('/api/users', '/api/users.php');
-get('/api/stations', '/api/stations.php');
+get( $LOCAL   .  '/',                 'index.php');
+get( $LOCAL   .  '/index.php',        'index.php');
+get( $LOCAL   .  '/api/help',         '/api/help.php');
+get( $LOCAL   .  '/api/users',        '/api/users.php');
+get( $LOCAL   .  '/api/stations',     '/api/stations.php');
+put( $LOCAL   .  '/api/login/$user',  '/api/login.php');
+post($LOCAL  .  '/api/check_login',  '/api/check_login.php');
 
-put('/api/login/$user', '/api/login.php');
 
-post('/api/check_login', '/api/check_login.php');
-
+get( $WEB   .  '/',                 'index.php');
+get( $WEB   .  '/index.php',        'index.php');
+get( $WEB   .  '/api/help',         '/api/help.php');
+get( $WEB   .  '/api/users',        '/api/users.php');
+get( $WEB   .  '/api/stations',     '/api/stations.php');
+put( $WEB   .  '/api/login/$user',  '/api/login.php');
+post($WEB  .  '/api/check_login',  '/api/check_login.php');
 
 # any('/404','views/404.php');
