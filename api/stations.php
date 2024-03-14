@@ -1,5 +1,7 @@
 <?php
 
+include './api/connectDB.php';
+
 header('Content-Type: application/json; charset-utf-8');
 http_response_code(400);
 
@@ -28,7 +30,9 @@ $placeholder = array(
 	format("Quebec",      1241,  914),   #Quebec      976  246
 	format("Winnipeg",    3466,  1237),  #Winnipeg    517  333
 	format("Edmonton",    4460,  855),   #Edmonton    312  230
-	format("Vancouver",   5289,  1078)  #Vancouver   141  290
+	format("Vancouver",   5289,  1078)   #Vancouver   141  290
 );
 
 echo json_encode($placeholder);
+
+?>
