@@ -1,10 +1,4 @@
 <?php
-
-include './api/connectDB.php';
-
-header('Content-Type: application/json; charset-utf-8');
-http_response_code(400);
-
 function format($name, $pos_x , $pos_y) {
 	return array(
 		"name" => $name,
@@ -12,6 +6,25 @@ function format($name, $pos_x , $pos_y) {
 		"pos_y" => $pos_y
 	);
 };
+header('Content-Type: application/json; charset-utf-8');
+http_response_code(400);
+
+/*
+
+include './api/connectDB.php';
+
+$sth = $dbh->query('SELECT name, position_x, position_y FROM Station06');
+
+$stations = array();
+
+while($row = $sth->fetch()) {
+	$stations[] = format(
+		$row->name,
+		$row->position_x,
+		$row->position_y
+	);
+}
+*/
 
 /*
  * https://www.viarail.ca/sites/all/files/media/destinations/images/img-carte-canada-all-fr.svg
@@ -34,5 +47,4 @@ $placeholder = array(
 );
 
 echo json_encode($placeholder);
-
 ?>
