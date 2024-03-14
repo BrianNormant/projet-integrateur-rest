@@ -11,6 +11,19 @@ function format($user_name, $mail, $company) {
 	];
 }
 
+/*
+function formatRow($row) {
+	return array(
+		"user_name" => $row->user_name,
+		"mail" => $row->mail,
+		"company" => $row->company,
+	);
+}
+include '/api/connectDB.php';
+$sth = $dbh->query('SELECT user_name,mail,company FROM User06');
+$users = array_map("formatRow", $sth->fetchAll());
+*/
+
 $placeholder = array(
 		format("brian",    "briannormant@bullshit.com",  "J'Aime-les-trains"),
 		format("Etienne",  "etienne@ferland.jp",         "J'Hais-les-trains"),
