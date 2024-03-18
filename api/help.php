@@ -12,11 +12,21 @@ api/help : affiche cette page
 api/users : Listes des utilisateurs
 	format: [ { "user_name", "mail", "company" }, ... ]
 
+api/:user/solde : Solde de l utilisateur
+	require token in header
+	format: { "solde" }
+
 api/stations : Listes des stations et leurs positions sur le reseaux
 	format : [ { "name", "pos_x", "pos_y" }, ... ]
 
 api/rails : Listes des rails et leur stations de connections
-	format : [ { "con1", "con2" } ]
+	format : [ { "con1", "con2" }, ... ]
+
+api/trains : Listes des trains en fonctionnement sur le reseau
+	format : [ { "id", "rail-id", "position-on-rail" }, ... ]
+
+api/:train/itineraire : Intineraire d un train
+	format : { "origin", "arret 1", ... ,"destination" }
 
 
 PUT
@@ -34,7 +44,6 @@ api/:user_name/check_login : vérification d un token valide
 	return code:
 	- 200 valid
 	- 404 non valid
-
 
 END;
 ?>
