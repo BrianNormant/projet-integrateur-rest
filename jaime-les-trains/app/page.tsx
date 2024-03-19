@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { LoginPage } from "./pages/LoginPage";
+import { Nav, Navbar } from "react-bootstrap";
+import { MyTrainsPage } from "./pages/MyTrainsPage";
 
 export default function Home() {
   
@@ -22,16 +24,23 @@ function MainPage() {
   return (
     <>
       <Navigation />
-      <MainContent />
+      <MyTrainsPage />
     </>
   )
 }
 
 function Navigation() {
   return (
-    <nav>
-      <p>{"This will be the navigation page"}</p>
-    </nav>
+    <Navbar className="px-2" bg="dark" data-bs-theme="dark">
+      <Navbar.Brand>{"J'aime les trains"}</Navbar.Brand>
+      <Nav className="w-100 d-flex justify-content-between">
+        <div className="d-flex">
+          <Nav.Link href="#main">{"Tableau de bord"}</Nav.Link>
+          <Nav.Link href="#trains">{"Mes Trains"}</Nav.Link>
+        </div>
+        <Nav.Link href="#profile">{"Mon profil"}</Nav.Link>
+      </Nav>
+    </Navbar>
   )
 }
 
