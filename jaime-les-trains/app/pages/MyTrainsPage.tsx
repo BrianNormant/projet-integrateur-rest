@@ -102,7 +102,7 @@ function StationComponent( {...props}: StationComponentProps ) {
             <div className="d-flex flex-column align-items-center">
                 <p className="mb-0" key={props.key}>{props.stationName}</p>
                 <div className="station-blip">
-                {props.noTrack ? <></> : <div className="station-rail" style={{width: width/3}}></div>}
+                {props.noTrack ? <></> : <div className="station-rail" style={{width: (width-150)/3}}></div>}
                 </div>
             </div>
          </div>
