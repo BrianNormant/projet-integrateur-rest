@@ -7,3 +7,30 @@
 .hoverable:hover {
     background-color: lightgray;
 }
+
+.station-wrapper {
+    z-index: 10;
+}
+
+.station-rail {
+    position: relative;
+    margin: 0px;
+    border: solid 3px lightgray;
+    background-color: lightgray;
+    height: 0.2rem;
+    top: 0.45rem;
+    left: 0.45rem;
+    z-index: -1;
+}
+
+.station-blip {
+    border: solid 3px lightgray;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: white;
+}
+
+.station-blip .passed {
+    background-color: blue;
+}
