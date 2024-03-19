@@ -109,6 +109,7 @@ function StationComponent( {...props}: StationComponentProps ) {
     )
 }
 
+//TODO attribution
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
   return {
