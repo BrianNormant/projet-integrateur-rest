@@ -10,7 +10,7 @@ $routes = array(
 	["get",   '/api/stations',     '/api/stations.php'],
 	["get",   '/api/rails',        '/api/rails.php'],
 	["put",   '/api/login/$user',  '/api/login.php'],
-	["post",  '/api/check_login',  '/api/check_login.php'],
+	["post",  '/api/check_login/$user',  '/api/check_login.php'],
 	# ["any",   '/404',              'views/404.php'],
 );
 
