@@ -31,6 +31,6 @@
     background-color: white;
 }
 
-.station-blip .passed {
-    background-color: blue;
+.passed {
+    border-color: blue;
 }

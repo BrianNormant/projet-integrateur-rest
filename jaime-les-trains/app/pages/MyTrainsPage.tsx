@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 
 var stationA = {
     name: "Station A",
@@ -59,17 +59,22 @@ var train1 = {
 
 export function MyTrainsPage( ) {
 
-    const [trains, setTrains] = useState([train1]);
+    const [trains, setTrains] = useState([train1, train1, train1]);
 
     return (
-        <Card className="m-3 p-2">
-            <Card.Title>
-                {"Mes Trains"}
-            </Card.Title>
-            <Card.Body>
-                {trains.map(x => <TrainComponent key={x.power} train={x}/>)}
-            </Card.Body>
-        </Card>
+        <div className="m-3">
+            <Card className="p-2 mb-2">
+                <Card.Title>
+                    {"Mes Trains"}
+                </Card.Title>
+                <Card.Body>
+                    {trains.map(x => <TrainComponent key={x.power} train={x}/>)}
+                </Card.Body>
+            </Card>
+            <Button>
+                {"Ajouter un train"}
+            </Button>
+        </div>
     )
 }
 
@@ -78,6 +83,9 @@ interface TrainComponentProps {
 }
 
 function TrainComponent( {...props}: TrainComponentProps) {
+    //Note - le map ici assume que props.train.route.path est coherent relativement a props.train.route.destination
+    //       cad on assume que connection2 de l'element x de route est le meme que l'element x+1 de route
+    //       et que connection 2 du dernier element de route est le meme que la destination finale
     return (
         <div>
             <div className="d-flex justify-content-between">
@@ -95,7 +103,11 @@ interface StationComponentProps {
 }
 
 function StationComponent( {...props}: StationComponentProps ) {
+
     const {height, width} = useWindowDimensions();
+
+    //TODO changer le magic number ici. Potentiellement une constante a extraire mais la meilleure solution serait de
+    //     calculer la valeur exacte des marges pq live si les stations ont des noms de tailles variable tt brise
 
     return (
         <div className="d-flex flex-column align-items-start station-wrapper">
