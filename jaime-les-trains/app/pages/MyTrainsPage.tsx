@@ -59,7 +59,7 @@ var train1 = {
 
 export function MyTrainsPage( ) {
 
-    const [trains, setTrains] = useState([train1, train1, train1]);
+    const [trains, setTrains] = useState([train1]);
 
     return (
         <div className="m-3">
