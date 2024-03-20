@@ -9,7 +9,7 @@ GET
 api/help : affiche cette page
 
 api/users : Listes des utilisateurs
-	format: [ { "id", "user_name", "mail", "company" }, ... ]
+	format: [ { user_name", "mail", "company" }, ... ]
 
 api/user/:user/solde : Solde de l utilisateur
 	require token in header
