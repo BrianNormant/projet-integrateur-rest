@@ -17,8 +17,10 @@ case 0:
 	break;
 case 1:
 	http_response_code(404);
+	break;
 case 2:
 	http_response_code(408);
+	break;
 }
 
 ?>
