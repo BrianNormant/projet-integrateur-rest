@@ -6,10 +6,10 @@ include './api/connectDB.php';
 
 function format($row) {
 	return array(
-		"id" => $row["id"],
-		"name" => $row["nameStation"],
-		"pos_x" => $row["posX"],
-		"pos_y" => $row["posY"]
+		"id"     =>  $row["id"],
+		"name"   =>  $row["nameStation"],
+		"pos_x"  =>  $row["posX"],
+		"pos_y"  =>  $row["posY"]
 	);
 }
 
