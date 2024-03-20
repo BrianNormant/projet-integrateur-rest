@@ -23,8 +23,8 @@
     z-index: -1;
 }
 
-.station-rail .passed {
-    top: 0.35rem;
+.station-rail.passed {
+    top: 0.20rem;
 }
 
 .station-blip {
