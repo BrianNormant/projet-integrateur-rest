@@ -49,7 +49,8 @@ if (strcmp($company_info[0]["type"], "admin") == 0) {
 	$sth = $dbh->prepare(<<<SQL
 SELECT id, currentRail AS rail_id, relative_position AS pos FROM EQ06_Train WHERE company_id = ?;
 SQL);
-	$trains = array_map("format", $sth->execute([$company_id])->fetchAll());
+	$sth->execute([$company_id]);
+	$trains = array_map("format", $sth->fetchAll());
 }
 echo json_encode($trains);
 

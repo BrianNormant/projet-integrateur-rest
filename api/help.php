@@ -30,8 +30,18 @@ api/trains : Listes des trains en fonctionnement sur le reseau
 	- 403 : Invalid token
 	- 408 : Expired token
 
-api/train/:train/details : Details d un train
-	format : { "origin", "arret 1", ... ,"destination" }
+api/train/:train/details : Tout les details sur un train circulant sur le reseau
+	require token in header
+	format : [ {
+		"id", "rail", "pos", "charge", "puissance", "company_id",
+		"route" : [ {"id", "origin", }, {"id", "stop 1"}, {"id", "stop 2"}, ..., {"id","destination"} ],
+		"prev_station", "next_station"
+		} ]
+	return code:
+	- 403 Invalid token
+	- 408 Expired token
+	- 404 Train doesn't exist
+	- 200 Ok
 
 
 PUT
@@ -52,7 +62,7 @@ api/check_login/:user : vérification d un token valide
 	- 404 non valide
 	- 408 token expiré
 api/user/:user/solde : Modifier Solde utilisateur
-	token in clear in header
+	?token : token a utiliser
 	?modif : ajout a retirer/ajouter au solde
 	return code:
 	- 404 : User doesn't exist

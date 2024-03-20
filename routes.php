@@ -11,6 +11,7 @@ $routes = array(
 	["get",  '/api/stations',          '/api/stations.php'],
 	["get",  '/api/rails',             '/api/rails.php'],
 	["get",  '/api/trains',            '/api/trains.php'],
+	["get",  '/api/train/$train/details', '/api/get_train_details.php'],
 	["put",  '/api/login/$user',       '/api/login.php'],
 	["post",  '/api/check_login/$user',  '/api/check_login.php'],
 	["post",  '/api/user/$user/solde',   '/api/modification_solde.php']
