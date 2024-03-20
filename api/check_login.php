@@ -7,7 +7,7 @@ if (!isset($_POST["token"])) {
 }
 
 include './api/connectDB.php';
-include './api/check_login.php';
+include './api/check_token.php';
 
 $code = check_token($dbh, $_POST["token"], $user);
 
@@ -22,4 +22,3 @@ case 2:
 }
 
 ?>
-
