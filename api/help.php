@@ -1,9 +1,8 @@
 <?php
-
-header('Content-Type: plain/text; charset=utf-8');
+header('Content-Type: text/plain; charset=utf-8');
 http_response_code(400);
 
-echo <<<END
+echo <<<HERE
 Aide/Liste des endpoints de API REST
 
 GET
@@ -23,9 +22,15 @@ api/rails : Listes des rails et leur stations de connections
 	format : [ { "id", "con1", "con2" }, ... ]
 
 api/trains : Listes des trains en fonctionnement sur le reseau
+	require token in header
+	a company token gives access to all trains owned by the company
+	an admin/maintainer token gives access to all trains on the network
 	format : [ { "id", "rail-id", "position-on-rail" }, ... ]
+	return code:
+	- 403 : Invalid token
+	- 408 : Expired token
 
-api/:train/itineraire : Intineraire d un train
+api/train/:train/details : Details d un train
 	format : { "origin", "arret 1", ... ,"destination" }
 
 
@@ -46,6 +51,5 @@ api/check_login/:user : vérification d un token valide
 	- 200 valide
 	- 404 non valide
 	- 408 token expiré
-
-END;
+HERE;
 ?>
