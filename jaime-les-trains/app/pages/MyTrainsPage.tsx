@@ -16,7 +16,7 @@ var stationB = {
 }
 
 var stationC = {
-    name: "Station C",
+    name: "Susmogus",
     position_x: 2,
     position_y: 1,
     free: true,
@@ -83,13 +83,15 @@ interface TrainComponentProps {
 }
 
 function TrainComponent( {...props}: TrainComponentProps) {
+
+    const {height, width} = useWindowDimensions();
     //Note - le map ici assume que props.train.route.path est coherent relativement a props.train.route.destination
     //       cad on assume que connection2 de l'element x de route est le meme que l'element x+1 de route
     //       et que connection 2 du dernier element de route est le meme que la destination finale
     return (
         <div>
             <div className="d-flex justify-content-between">
-                {props.train.route.path.map((x, i) => <StationComponent key={i} stationName={x.connection1.name}/>)}
+                {props.train.route.path.map((x, i) => <StationComponent key={i} stationName={x.connection1.name} tracklength={(width-150)/props.train.route.path.length}/>)}
                 <StationComponent key={0} stationName={props.train.route.destination.name} noTrack={true} />
             </div>
         </div>
@@ -100,11 +102,10 @@ interface StationComponentProps {
     key: number,
     stationName: string,
     noTrack?: boolean,
+    tracklength?: number,
 }
 
 function StationComponent( {...props}: StationComponentProps ) {
-
-    const {height, width} = useWindowDimensions();
 
     //TODO changer le magic number ici. Potentiellement une constante a extraire mais la meilleure solution serait de
     //     calculer la valeur exacte des marges pq live si les stations ont des noms de tailles variable tt brise
@@ -114,7 +115,7 @@ function StationComponent( {...props}: StationComponentProps ) {
             <div className="d-flex flex-column align-items-center">
                 <p className="mb-0" key={props.key}>{props.stationName}</p>
                 <div className="station-blip">
-                {props.noTrack ? <></> : <div className="station-rail" style={{width: (width-150)/3}}></div>}
+                {props.noTrack ? <></> : <div className="station-rail" style={{width: props.tracklength}}></div>}
                 </div>
             </div>
          </div>
