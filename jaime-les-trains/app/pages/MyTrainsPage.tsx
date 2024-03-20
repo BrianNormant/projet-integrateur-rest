@@ -59,7 +59,7 @@ var train1 = {
 
 export function MyTrainsPage( ) {
 
-    const [trains, setTrains] = useState([train1]);
+    const [trains, setTrains] = useState([train1, {...train1, relative_position: 0.3}]);
 
     return (
         <div className="m-3">
@@ -92,7 +92,6 @@ function TrainComponent( {...props}: TrainComponentProps) {
     //Note - On assume ici que chaque rail est traverse au maximum une seule fois
     let currentTrackIndex: number = 0;
     props.train.route.path.forEach((x, i) => x == props.train.currentRail ? currentTrackIndex = i : "")
-    console.log(currentTrackIndex);
 
     let trackWidth: number = (width-150)/props.train.route.path.length;
 
@@ -119,8 +118,6 @@ function StationComponent( {...props}: StationComponentProps ) {
 
     //TODO changer le magic number ici. Potentiellement une constante a extraire mais la meilleure solution serait de
     //     calculer la valeur exacte des marges pq live si les stations ont des noms de tailles variable tt brise
-
-    console.log(props)
 
     return (
         <div className="d-flex flex-column align-items-start station-wrapper">
