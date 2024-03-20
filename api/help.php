@@ -11,7 +11,7 @@ api/help : affiche cette page
 api/users : Listes des utilisateurs
 	format: [ { "id", "user_name", "mail", "company" }, ... ]
 
-api/users/:user/solde : Solde de l utilisateur
+api/user/:user/solde : Solde de l utilisateur
 	require token in header
 	format: { "solde" }
 
@@ -51,5 +51,13 @@ api/check_login/:user : vérification d un token valide
 	- 200 valide
 	- 404 non valide
 	- 408 token expiré
+api/user/:user/solde : Modifier Solde utilisateur
+	token in clear in header
+	?modif : ajout a retirer/ajouter au solde
+	return code:
+	- 404 : User doesn't exist
+	- 403 : Invalid token
+	- 408 : Expired token
+	- 406 : Invalid request (Solde would be negative)
 HERE;
 ?>
