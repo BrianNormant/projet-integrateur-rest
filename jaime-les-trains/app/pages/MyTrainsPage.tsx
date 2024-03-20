@@ -68,7 +68,7 @@ export function MyTrainsPage( ) {
                     {"Mes Trains"}
                 </Card.Title>
                 <Card.Body>
-                    {trains.map(x => <TrainComponent key={x.power} train={x}/>)}
+                    {trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
                 </Card.Body>
             </Card>
             <Button>
