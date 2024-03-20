@@ -59,7 +59,7 @@ var train1 = {
 
 export function MyTrainsPage( ) {
 
-    const [trains, setTrains] = useState([train1, {...train1, relative_position: 0.3}]);
+    const [trains, setTrains] = useState([train1, {...train1, relative_position: 0.3, route: {...train1.route, path: [railCA]}}]);
 
     return (
         <div className="m-3">
