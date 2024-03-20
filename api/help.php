@@ -25,7 +25,7 @@ api/trains : Listes des trains en fonctionnement sur le reseau
 	require token in header
 	a company token gives access to all trains owned by the company
 	an admin/maintainer token gives access to all trains on the network
-	format : [ { "id", "rail-id", "position-on-rail" }, ... ]
+	format : [ { "id", "rail_id", "pos" }, ... ]
 	return code:
 	- 403 : Invalid token
 	- 408 : Expired token
