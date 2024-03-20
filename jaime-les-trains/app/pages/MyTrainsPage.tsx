@@ -49,12 +49,12 @@ var train1 = {
         destination: stationA,
         path: [railAB, railBC, railCA]
     },
-    currentRail: railAB,
+    currentRail: railBC,
     lastStation: stationA,
     nextStation: stationB,
     load: 100,
     power: 100,
-    relative_position: 0.5,
+    relative_position: 0.8,
 }
 
 export function MyTrainsPage( ) {
@@ -88,10 +88,18 @@ function TrainComponent( {...props}: TrainComponentProps) {
     //Note - le map ici assume que props.train.route.path est coherent relativement a props.train.route.destination
     //       cad on assume que connection2 de l'element x de route est le meme que l'element x+1 de route
     //       et que connection 2 du dernier element de route est le meme que la destination finale
+
+    //Note - On assume ici que chaque rail est traverse au maximum une seule fois
+    let currentTrackIndex: number = 0;
+    props.train.route.path.forEach((x, i) => x == props.train.currentRail ? currentTrackIndex = i : "")
+    console.log(currentTrackIndex);
+
+    let trackWidth: number = (width-150)/props.train.route.path.length;
+
     return (
         <div>
             <div className="d-flex justify-content-between">
-                {props.train.route.path.map((x, i) => <StationComponent key={i} stationName={x.connection1.name} tracklength={(width-150)/props.train.route.path.length}/>)}
+                {props.train.route.path.map((x, i) => <StationComponent key={i} stationName={x.connection1.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={i==currentTrackIndex ? props.train.relative_position * trackWidth : (i < currentTrackIndex ? trackWidth : 0)}/>)}
                 <StationComponent key={0} stationName={props.train.route.destination.name} noTrack={true} />
             </div>
         </div>
@@ -101,8 +109,10 @@ function TrainComponent( {...props}: TrainComponentProps) {
 interface StationComponentProps {
     key: number,
     stationName: string,
+    stationPassed?: boolean,
     noTrack?: boolean,
     tracklength?: number,
+    trackStatus?: number,
 }
 
 function StationComponent( {...props}: StationComponentProps ) {
@@ -110,12 +120,19 @@ function StationComponent( {...props}: StationComponentProps ) {
     //TODO changer le magic number ici. Potentiellement une constante a extraire mais la meilleure solution serait de
     //     calculer la valeur exacte des marges pq live si les stations ont des noms de tailles variable tt brise
 
+    console.log(props)
+
     return (
         <div className="d-flex flex-column align-items-start station-wrapper">
             <div className="d-flex flex-column align-items-center">
                 <p className="mb-0" key={props.key}>{props.stationName}</p>
-                <div className="station-blip">
-                {props.noTrack ? <></> : <div className="station-rail" style={{width: props.tracklength}}></div>}
+                <div className={props.stationPassed ? "station-blip passed" : "station-blip"}>
+                {props.noTrack ? <></> : 
+                    <>
+                        <div className="station-rail" style={{width: props.tracklength}}></div>
+                        <div className="station-rail passed" style={{width: props.trackStatus}}></div>
+                    </>
+                }
                 </div>
             </div>
          </div>

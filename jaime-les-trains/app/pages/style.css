@@ -23,6 +23,10 @@
     z-index: -1;
 }
 
+.station-rail .passed {
+    top: 0.35rem;
+}
+
 .station-blip {
     border: solid 3px lightgray;
     width: 1.5rem;
