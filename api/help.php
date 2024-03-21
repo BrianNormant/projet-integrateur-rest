@@ -45,7 +45,7 @@ api/reservations/:origin/:destination : Liste des reversations possible pour un 
 
 	[[{"rail", "time"}, ...], ... ]
 	return code:
-	- 404 : Au moins 1 des ids est invalide
+	- 404 : Au moins 1 des ids est invalides
 	- 200 : OK
 
 
@@ -59,13 +59,30 @@ api/login/:user : authentification
 	- 401 : Wrong Password
 	- 200 : Access granted
 
+PUT
+api/reservations/:origin/:destination
+	?token
+	?date   : formated as "Y-m-d"
+	?period : one of morning, evening, night
+	date and period avalaible for a given origin destination can be obtained
+	trougth a GET request on the same endpoint
+	the token must be one of an account with admin or company privilege
+	the company linked to the token will be deducted the fare of requested reserrvations
+	return code : 
+	- 417 : one or more field is missing
+	- 404 : origin and/or destination doesn't exist
+	- 403 : invalid token OR wrong type of user
+	- 408 : token expired
+	- 406 : solde is to low for the given reservation
+
+
 POST
 api/check_login/:user : vérification d un token valide
 	?token
 	return code:
-	- 200 valide
-	- 404 non valide
-	- 408 token expiré
+	- 200 : valide
+	- 404 : non valide
+	- 408 : token expiré
 api/user/:user/solde : Modifier Solde utilisateur
 	?token : token a utiliser
 	?modif : ajout a retirer/ajouter au solde

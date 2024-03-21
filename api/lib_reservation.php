@@ -78,4 +78,26 @@ function gen_possibility($start) {
 		}
 	}
 }
+/**
+ * Commit a reservation on the database
+ * reservations will be created and put on the database
+ * if $user is null, it is assumed that user is jaimelestrains
+ */
+function commit_reservation($dbh, $rails, $reservation, $company = 'jaimelestrains') {
+	function reserve_rail($sth, $reservation, $company, $rail_id) {
+		return $sth->execute([
+			':c_id' => $company,
+			':fare' => $reservation["fare"],
+			':date' => $reservation["date"],
+			':timeSlot' => $reservation["period"],
+			':rail_id'  => $rail_id,
+		]);
+	}
+	$sth = $dbh->prepare(<<<SQL
+	INSERT INTO EQ06_Reservation (company_id, fare, dateReserv, timeSlot, rail_id) VALUES
+	( :c_id, :fare, STR_TO_DATE(:date, '%Y-%m-%d'), :timeSlot, :rail_id);
+	SQL);
+
+	array_map(fn($rail) => reserve_rail($sth, $reservation, $company, $rail["id"]), $rails);
+}
 ?>

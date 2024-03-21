@@ -55,4 +55,15 @@ function get_perm_for_user($dbh, $user) : string | false {
 	return $types[0]["type"];
 }
 
+function get_company_for_user($dbh, $user) : string | false {
+	$sth = $dbh->prepare(<<<SQL
+	SELECT A.Company_id as id FROM EQ06_Token T
+	INNER JOIN EQ06_Account A ON A.userName = T.userUsed
+	WHERE userName = ?;
+	SQL);
+	$sth->execute([$user]);
+	if (!$sth->rowCount()) return false;
+	return $sth->fetchAll()[0]["id"];
+}
+
 ?>
