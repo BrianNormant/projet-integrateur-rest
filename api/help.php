@@ -1,8 +1,7 @@
 <?php
 header('Content-Type: text/plain; charset=utf-8');
-http_response_code(400);
-
-echo <<<HERE
+http_response_code(200);
+?>
 Aide/Liste des endpoints de API REST
 
 GET
@@ -42,6 +41,12 @@ api/train/:train/details : Tout les details sur un train circulant sur le reseau
 	- 408 Expired token
 	- 404 Train doesn't exist
 	- 200 Ok
+api/reservations/:origin/:destination : Liste des reversations possible pour un trajet
+
+	[[{"rail", "time"}, ...], ... ]
+	return code:
+	- 404 : Au moins 1 des ids est invalide
+	- 200 : OK
 
 
 PUT
@@ -69,5 +74,4 @@ api/user/:user/solde : Modifier Solde utilisateur
 	- 403 : Invalid token
 	- 408 : Expired token
 	- 406 : Invalid request (Solde would be negative)
-HERE;
-?>
+
