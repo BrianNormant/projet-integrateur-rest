@@ -69,15 +69,18 @@ WHERE R.id = ? AND RR.dateReserv = ? AND RR.timeSlot = ?;
 SQL);
 $shifts = array( 'morning', 'evening', 'night' );
 $i = 0;
+$tax_rate = 2;
 $possibilities = array();
 while (sizeof($possibilities) < 10) {
 	$possibility = array(
 		"date"   => date_format($start, "Y-m-d"),
 		"period" => $shifts[$i++],
+		"fare"   => round(2500 * $tax_rate),
 	);
 	if ($i >= sizeof($shifts)) {
 		$i = 0;
 		$start = date_add($start, date_interval_create_from_date_string("1 day"));
+		$tax_rate = pow($tax_rate, 0.5);
 	}
 	foreach($rails as $rail) {
 		$sth->execute([$rail["id"], $possibility["date"], $possibility["period"]]);
