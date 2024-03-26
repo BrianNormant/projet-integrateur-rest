@@ -1,0 +1,4 @@
+[Service]
+Type=oneshot
+WorkingDirectory=/var/www/equipe500/projet6
+ExecStart=php daemons/update_trains.php
