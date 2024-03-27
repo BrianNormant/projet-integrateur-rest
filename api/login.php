@@ -2,7 +2,12 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // TODO encode password with SHA256, BASE64, whatever
-$password = file_get_contents("php://input");
+$headers = apache_request_headers();
+if (!isset($headers["Authorization"])) {
+	http_response_code(417);
+	exit;
+}
+$password = $headers["Authorization"];
 
 include './api/connectDB.php';
 

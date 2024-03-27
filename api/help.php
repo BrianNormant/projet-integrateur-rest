@@ -53,7 +53,7 @@ api/reservations/:origin/:destination : Liste des reversations possible pour un 
 PUT
 api/login/:user : authentification
 	Toutes les request privilegier sur l API auront besoin d un token valide 
-	password in clear in header
+	password in clear in body
 	format { "token" }
 	return code:
 	- 404 : User doesnt Exist
