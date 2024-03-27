@@ -62,7 +62,7 @@ api/login/:user : authentification
 
 PUT
 api/reservations/:origin/:destination
-	?token
+	Authorization : Bearer <token>
 	?date   : formated as "Y-m-d"
 	?period : one of morning, evening, night
 	date and period avalaible for a given origin destination can be obtained

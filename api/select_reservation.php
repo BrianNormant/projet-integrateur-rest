@@ -17,10 +17,19 @@ if ($origin == $destination) {
 	exit;
 }
 
-$contents = explode("\n", file_get_contents("php://input"));
-$token = $contents[0];
-$date = $contents[1];
-$period = $contents[2];
+$headers = apache_request_headers();
+if (!isset($headers["Authorization"])) {
+	http_response_code(417);
+	exit;
+}
+$token = $headers["Authorization"];
+
+
+// $contents = explode("\n", file_get_contents("php://input"));
+// $date = $contents[1];
+// $period = $contents[2];
+$date = $_REQUEST["date"];
+$period = $_REQUEST["period"];
 
 if (!($period == 'morning' 
 	||$period == 'evening'
