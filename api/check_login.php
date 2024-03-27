@@ -1,15 +1,20 @@
 <?php
 # header('Content-Type: plain/text; charset=utf-8');
 
-if (!isset($_POST["token"])) {
+
+$headers = apache_request_headers();
+if (!isset($headers["Authorization"])) {
 	http_response_code(417);
 	exit;
 }
+$token = $headers["Authorization"];
+
+
 
 include './api/connectDB.php';
 include './api/check_token.php';
 
-$code = check_token($dbh, $_POST["token"], $user);
+$code = check_token($dbh, $token, $user);
 
 switch ($code) {
 case 0: 

@@ -78,7 +78,7 @@ api/reservations/:origin/:destination
 
 POST
 api/check_login/:user : vérification d un token valide
-	?token
+	Authorization : Bearer <token>
 	return code:
 	- 200 : valide
 	- 404 : non valide
