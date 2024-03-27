@@ -29,6 +29,17 @@ api/trains : Listes des trains en fonctionnement sur le reseau
 	- 403 : Invalid token
 	- 408 : Expired token
 
+api/stations/:id/arrival : Liste des trains qui passeront par cette station ainsi que leur ETA de leur position actuel jusqu'a cette station
+	Authorization : <token> ; Un token de company donne la liste des trains de cette company, Un token d'admin liste tout les trains
+	format : [ {"id", "ETA"}, ...]
+	return code:
+		- 403 Invalid token
+		- 408 Expired token
+		- 404 Station doesn't exist
+		- 200 Ok
+	
+
+
 api/train/:train/details : Tout les details sur un train circulant sur le reseau
 	Authorization : Bearer <token>
 	format : [ {
@@ -52,7 +63,6 @@ api/reservations/:origin/:destination : Liste des reversations possible pour un 
 api/list_reservations : Listes des reservations qu'une company a
 	Authorization : Bearer <token>
 	[ {id, fare, dateReserv, timeSlot, rail_id} ,...]
-	
 
 
 PUT
@@ -67,9 +77,10 @@ api/login/:user : authentification
 
 PUT
 api/reservations/:origin/:destination
-	Authorization : Bearer <token>
-	?date   : formated as "Y-m-d"
-	?period : one of morning, evening, night
+	Authorization : <token>
+	Query String:
+		?date   : formated as "%Y-%m-%d"
+		?period : one of morning, evening, night
 	date and period avalaible for a given origin destination can be obtained
 	trougth a GET request on the same endpoint
 	the token must be one of an account with admin or company privilege
@@ -81,10 +92,23 @@ api/reservations/:origin/:destination
 	- 408 : token expired
 	- 406 : solde is to low for the given reservation
 
+PUT
+api/train/:origin/:dest
+	Authorization : <token>
+	Put a train the network
+	Body: json with train data
+	{ "charge", "puissance" }
+	- 417 : one or more field is missing
+	- 404 : origin and/or destination doesn't exist
+	- 403 : invalid token OR wrong type of user
+	- 408 : token expired
+	- 406 : Failed reservation check
+	
+
 
 POST
 api/check_login/:user : vérification d un token valide
-	Authorization : Bearer <token>
+	Authorization : <token>
 	return code:
 	- 200 : valide
 	- 404 : non valide

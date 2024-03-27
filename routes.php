@@ -15,6 +15,7 @@ $routes = array(
 	["get",  '/api/reservations/$origin/$destination', '/api/reservation.php'],
 	["get",  '/api/list_reservations', '/api/list_reservations.php'],
 	["put",  '/api/login/$user',       '/api/login.php'],
+	["put",  '/api/train/$origin/$destination', '/api/put_train.php'],
 	["put",  '/api/reservations/$origin/$destination', '/api/select_reservation.php'],
 	["post",  '/api/check_login/$user',  '/api/check_login.php'],
 	["post",  '/api/user/$user/solde',   '/api/modification_solde.php']

@@ -50,14 +50,35 @@ function is_reservation_free($dbh, $rails, $possibility) : bool {
 	return true;
 }
 
+function is_reservation_reserved($dbh, $rails, $possibility) : bool {
+	$sth = $dbh->prepare(<<<SQL
+	SELECT id FROM EQ06_Reservation
+	WHERE rail_id = ? AND dateReserv = ? AND timeSlot = ?;
+	SQL);
+
+	// return true if rail is reserved
+	function check_for_rail($sth, $rail, $date, $slot) {
+		$sth->execute([$rail, $date, $slot]);
+		return $sth->rowCount() != 0;
+	}
+
+	$result = array_map(fn($rail) => !check_for_rail($sth, $rail["id"], $possibility["date"], $possibility["period"]), $rails);
+	return !array_sum($result);
+}
+
 function create_reservation($date, $period) {
 	$fare = 2500;
 	$tax_rate = 2;
 	$day = date_create($date)->getTimestamp() - date_create(date("Y-m-d"))->getTimestamp();
-	$day = round($day / (60*60*24));
-	for ($i = 0; $i < $day; $i++) $tax_rate = pow($tax_rate, 0.5);
-	$fare *= $tax_rate;
-	$fare = round($fare);
+	if ($day < 60 * 60) {
+		$fare = 3600;
+	} else {
+		$day = round($day / (60*60*24));
+		for ($i = 0; $i < $day; $i++) $tax_rate = pow($tax_rate, 0.5);
+		$fare *= $tax_rate;
+		$fare = round($fare);
+	}
+
 
 	return array(
 		"date" => $date,
