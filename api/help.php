@@ -49,6 +49,11 @@ api/reservations/:origin/:destination : Liste des reversations possible pour un 
 	- 404 : Au moins 1 des ids est invalides
 	- 200 : OK
 
+api/list_reservations : Listes des reservations qu'une company a
+	Authorization : Bearer <token>
+	[ {id, fare, dateReserv, timeSlot, rail_id} ,...]
+	
+
 
 PUT
 api/login/:user : authentification
