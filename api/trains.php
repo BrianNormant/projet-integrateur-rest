@@ -11,12 +11,18 @@ function format($row) {
 	);
 }
 
-$token = file_get_contents("php://input");
+$headers = apache_request_headers();
+if (!isset($headers["Authorization"])) {
+	http_response_code(417);
+	exit;
+}
+$token = $headers["Authorization"];
+
 include './api/connectDB.php';
 include './api/check_token.php';
 
 # check if token is valid
-switch (check_token($dbh, $token,null)) {
+switch (check_token($dbh, $token, null)) {
 case 1 :
 	http_response_code(403);
 	exit;

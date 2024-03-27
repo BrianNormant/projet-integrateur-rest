@@ -21,7 +21,7 @@ api/rails : Listes des rails et leur stations de connections
 	format : [ { "id", "con1", "con2" }, ... ]
 
 api/trains : Listes des trains en fonctionnement sur le reseau
-	require token in header
+	Authorization : Bearer <token>
 	a company token gives access to all trains owned by the company
 	an admin/maintainer token gives access to all trains on the network
 	format : [ { "id", "rail_id", "pos" }, ... ]
