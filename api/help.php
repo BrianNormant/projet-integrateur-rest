@@ -30,7 +30,7 @@ api/trains : Listes des trains en fonctionnement sur le reseau
 	- 408 : Expired token
 
 api/train/:train/details : Tout les details sur un train circulant sur le reseau
-	require token in header
+	Authorization : Bearer <token>
 	format : [ {
 		"id", "rail", "pos", "charge", "puissance", "company_id",
 		"route" : [ {"id", "origin", }, {"id", "stop 1"}, {"id", "stop 2"}, ..., {"id","destination"} ],
@@ -41,6 +41,7 @@ api/train/:train/details : Tout les details sur un train circulant sur le reseau
 	- 408 Expired token
 	- 404 Train doesn't exist
 	- 200 Ok
+
 api/reservations/:origin/:destination : Liste des reversations possible pour un trajet
 
 	[[{"rail", "time"}, ...], ... ]
