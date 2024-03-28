@@ -21,28 +21,29 @@ function get_rails($dbh, $origin, $destination) {
 		$rails[] = array($path[$i], $path[$i+1]);
 	# Get Id of rails from DB
 	$sth_rail = $dbh->prepare(<<<SQL
-	SELECT id,conn1_station,conn2_station FROM EQ06_Rail WHERE conn1_station = ? AND conn2_station = ? OR conn1_station = ? AND conn2_station = ?;
+	SELECT id,conn1_station,conn2_station,longueur FROM EQ06_Rail WHERE conn1_station = ? AND conn2_station = ? OR conn1_station = ? AND conn2_station = ?;
 	SQL);
 	function rail_from_db($sth, $rail) {
 		$sth->execute([$rail[0], $rail[1], $rail[1], $rail[0]]);
 		$data = $sth->fetchAll()[0];
 		return array(
-			"id" => $data["id"],
+			"id"   => $data["id"],
 			"con1" => $data["conn1_station"],
 			"con2" => $data["conn2_station"],
+			"len"  => $data["longueur"],
 		);
 	}
 	return array_map(fn($rail) => rail_from_db($sth_rail, $rail), $rails);
 }
 
-function is_reservation_free($dbh, $rails, $possibility) : bool {
+function is_reservation_free($dbh, $rails, $possibility, $company = '') : bool {
 	$sth = $dbh->prepare(<<<SQL
 	SELECT * FROM EQ06_Reservation RR
 	INNER JOIN EQ06_Rail R ON RR.rail_id = R.id
-	WHERE R.id = ? AND RR.dateReserv = ? AND RR.timeSlot = ?;
+	WHERE R.id = ? AND RR.dateReserv = ? AND RR.timeSlot = ? AND RR.company_id <> ?;
 	SQL);
 	foreach($rails as $rail) {
-		$sth->execute([$rail["id"], $possibility["date"], $possibility["period"]]);
+		$sth->execute([$rail["id"], $possibility["date"], $possibility["period"], $company]);
 		if ($sth->rowCount() != 0) {
 			return false;
 		}
@@ -115,10 +116,52 @@ function commit_reservation($dbh, $rails, $reservation, $company = 'jaimelestrai
 		]);
 	}
 	$sth = $dbh->prepare(<<<SQL
-	INSERT INTO EQ06_Reservation (company_id, fare, dateReserv, timeSlot, rail_id) VALUES
-	( :c_id, :fare, STR_TO_DATE(:date, '%Y-%m-%d'), :timeSlot, :rail_id);
+	INSERT INTO EQ06_Reservation (company_id, fare, dateReserv, timeSlot, rail_id) 
+	SELECT :c_id, :fare, STR_TO_DATE(:date, '%Y-%m-%d'), :timeSlot, :rail_id FROM DUAL
+	WHERE NOT EXISTS (
+		SELECT * FROM EQ06_Reservation WHERE company_id = :c_id AND dateReserv = STR_TO_DATE(:date, '%Y-%m-%d') AND rail_id = :rail_id AND timeSlot = :timeSlot
+	);
 	SQL);
 
 	array_map(fn($rail) => reserve_rail($sth, $reservation, $company, $rail["id"]), $rails);
+}
+
+
+/**
+ * Return an array of the station $train is going to visit next
+ * $train = array ( "id", "stop")
+ */
+function get_following_stations($dbh, $train) {
+	$sth = $dbh->prepare(<<<SQL
+	SELECT R.conn1_station AS c1, R.conn2_station AS c2
+	FROM EQ06_RailRoute RR
+	INNER JOIN RAIL R ON R.id = RR.rail_id
+	WHERE RR.route_id = ? AND RR.nb_stop > ?
+	ORDER BY RR.nb_stop;
+	SQL);
+	$sth->execute(array($train["id"], $train["stop"]));
+	$rails = $sth->fetchAll(PDO::FETCH_ASSOC);
+	$rails = array_map(fn($row) => [$row["c1"], $row["c2"]], $rails);
+
+	$stations = [in_array($rails[0][0], $rails[1])?$rails[0][1]:$rails[0][0]];
+
+	for ($i = 1; $i < count($rails); $i++) {
+		$stations[] = ($stations[$i-1] == $rails[$i-1][0])?$rails[$i-1][1]:$rails[$i-1][0];
+	}
+	return $stations;
+}
+
+function get_distance_between_station($dbh, $s1, $s2) : int {
+	$rails = get_rails($dbh, $s1, $s2);
+	$rails = array_map(fn($row) => $row["len"], $rails);
+	return array_sum($rails);
+}
+
+// Litteralement de chatgpt:
+// v ≈ √(2*745.7*p)/(m*0.5)
+// with p in HP, m in kg and v in m/s
+// return speed in kph
+function get_avg_speed($charge, $power) {
+	return 3.6 * sqrt((2 * 745.7 * $power) / ($charge * 0.5) );
 }
 ?>

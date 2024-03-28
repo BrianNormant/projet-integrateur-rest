@@ -88,15 +88,26 @@ for ($i = 0; $i < count($rails); $i++) {
 }
 $sql .= <<<SQL
 INSERT INTO EQ06_Train (charge, puissance, company_id, route_id, relative_position, currentRail, lastStation, nextStation) VALUES
-(:charge, :puiss, :c_id, @id_route, 0, :cur_rail, :ls, :ns);
+(:charge, :puiss, :c_id, @id_route, 0, :cur_rail, :ls, :ns);;
 SQL;
+
+$dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 $sth = $dbh->prepare($sql);
+if (!$sth) {
+	echo "\nPDO::errorInfo():\n";
+    print_r($dbh->errorInfo());
+}
+
 
 $ns = ($rails[0]["con1"] == $origin)? $rails[0]["con2"] : $rails[0]["con1"];
-$sth->execute([
+if (!$sth->execute([
 	"org" => $origin, "dst" => $destination,
 	"charge" => $body["charge"], "puiss" => $body["puissance"],
 	"c_id" => $company, "cur_rail" => $rails[0]["id"], 
 	"ls" => $origin, "ns" => $ns
-]);
+])) {
+	echo "\nPDO::errorInfo():\n";
+    print_r($dbh->errorInfo());
+}
+
 $sth->fetchAll();

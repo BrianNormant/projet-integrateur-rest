@@ -18,14 +18,15 @@ $graph_array = array(
 $path = dijkstra($graph_array, "a", "e");
  */
 
+function to_vertice($row) {
+	return array(
+		$row["conn1_station"],
+		$row["conn2_station"],
+		$row["longueur"],
+	);
+}
+
 function fetch_network_as_graph($dbh) {
-	function to_vertice($row) {
-		return array(
-			$row["conn1_station"],
-			$row["conn2_station"],
-			$row["longueur"],
-		);
-	}
 	$data = $dbh->query("SELECT conn1_station, conn2_station, longueur FROM EQ06_Rail")->fetchAll();
 	return array_map("to_vertice", $data);
 }

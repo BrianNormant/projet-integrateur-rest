@@ -61,13 +61,13 @@ case 2:
 $possibility = create_reservation($date, $period);
 
 $rails = get_rails($dbh, $origin, $destination);
-
-if (!is_reservation_free($dbh, $rails, $possibility)) {
+$user = get_user_for_token($dbh, $token);
+$company = get_company_for_user($dbh, $user);
+if (!is_reservation_free($dbh, $rails, $possibility, $company)) {
 	http_response_code(409);
 	exit;
 }
 
-$user = get_user_for_token($dbh, $token);
 
 http_response_code(200);
 if (get_perm_for_user($dbh, $user) == 'admin') {
@@ -86,7 +86,7 @@ if (get_perm_for_user($dbh, $user) == 'admin') {
 		http_response_code(406);
 		exit;
 	}
-	commit_reservation($dbh, $rails ,$possibility, get_company_for_user($dbh, $user));
+	commit_reservation($dbh, $rails ,$possibility, $company);
 }
 
 ?>
