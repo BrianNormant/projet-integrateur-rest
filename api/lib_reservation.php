@@ -10,6 +10,18 @@ function stations_exist($dbh, $station_id) : bool {
 	return $sth->rowCount() > 0;
 }
 
+function rail_from_db($sth, $rail) {
+	$sth->execute([$rail[0], $rail[1], $rail[1], $rail[0]]);
+	$data = $sth->fetchAll()[0];
+	return array(
+		"id"   => $data["id"],
+		"con1" => $data["conn1_station"],
+		"con2" => $data["conn2_station"],
+		"len"  => $data["longueur"],
+	);
+}
+
+
 function get_rails($dbh, $origin, $destination) {
 	# Find path
 	$network = fetch_network_as_graph($dbh);
@@ -23,16 +35,6 @@ function get_rails($dbh, $origin, $destination) {
 	$sth_rail = $dbh->prepare(<<<SQL
 	SELECT id,conn1_station,conn2_station,longueur FROM EQ06_Rail WHERE conn1_station = ? AND conn2_station = ? OR conn1_station = ? AND conn2_station = ?;
 	SQL);
-	function rail_from_db($sth, $rail) {
-		$sth->execute([$rail[0], $rail[1], $rail[1], $rail[0]]);
-		$data = $sth->fetchAll()[0];
-		return array(
-			"id"   => $data["id"],
-			"con1" => $data["conn1_station"],
-			"con2" => $data["conn2_station"],
-			"len"  => $data["longueur"],
-		);
-	}
 	return array_map(fn($rail) => rail_from_db($sth_rail, $rail), $rails);
 }
 
