@@ -1,13 +1,6 @@
-GET {{URL}}/help
+GET https://jsonplaceholder.typicode.com/posts/3
 
-GET {{URL}}/stations
-
-GET {{URL}}/rails
-
-GET {{URL}}/users
-
-PUT {{URL}}/login/{{USER}}
-
-1234
-
-POST {{URL}}/check_login/{{USER}}?token={{token}}
+--{%
+local body = context.json_decode(context.result.body)
+context.set_env("postId", body.id)
+--%}
