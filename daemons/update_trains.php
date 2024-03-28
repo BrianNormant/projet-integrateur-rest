@@ -1,8 +1,11 @@
 <?php
 
 include './api/connectDB.php';
+include './api/lib_reservation.php';
 
 # --- Simply advance each train to next the % of completion
+
+$TIME_DELAY = 5 / 60; // in hour
 
 # TODO Handle train that have reach the final destination
 $sth = $dbh->query(<<<SQL
@@ -46,12 +49,24 @@ SQL);
 printf("%s trains have reach a station and a continuing to the next rail\n", $sth->rowCount());
 
 
-# TODO use rail length to determine of much advancement in X time
 $sth = $dbh->query(<<<SQL
-UPDATE EQ06_Train 
-SET relative_position = relative_position + 1
+SELECT T.id AS id, longueur, charge, puissance FROM EQ06_Train T
+INNER JOIN EQ06_Rail RR ON T.currentRail = RR.id
 WHERE relative_position < 100;
 SQL);
+
+$trains = $sth->fetchAll(PDO::FETCH_ASSOC);
+foreach($trains as $train) {
+	$speed = get_avg_speed($train["charge"], $train["puissance"]);
+	$dist = $TIME_DELAY * $speed;
+
+	$newpos = $dist * 100 / $train["longueur"];
+	if ($newpos > 99.5) $newpos = 100;
+
+	$id = $train["id"];
+
+	$dbh->query("UPDATE EQ06_Train SET relative_position = $newpos WHERE id = $id;");
+}
 printf("%d where moved\n", $sth->rowCount());
 
 ?>

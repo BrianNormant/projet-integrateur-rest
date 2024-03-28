@@ -23,10 +23,10 @@ curl -i -X POST $URL/check_login/$USER -H "$HA"
 
 echo "Create reservation"
 
-curl -i -X PUT "$URL/reservations/$ORIGIN/$DESTINATION?date=$DATE&period=$PERIOD" -H "$HA"
+# curl -i -X PUT "$URL/reservations/$ORIGIN/$DESTINATION?date=$DATE&period=$PERIOD" -H "$HA"
 
 echo "Put train"
 # curl -i -X PUT $URL/train/$ORIGIN/$DESTINATION -H "$HA" -d '{"charge":200,"puissance":4500}'
 
 echo "List arrival at station"
-curl -i -X GET $URL/stations/198/arrivals -H "$HA"
+curl -i -X GET $URL/stations/203/arrivals -H "$HA"
