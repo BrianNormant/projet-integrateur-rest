@@ -32,7 +32,7 @@ SET T.lastStation = T.nextStation,
                          INNER JOIN EQ06_Rail R ON R.id = RR.rail_id 
                          WHERE RR.route_id = T.route_id AND RR.nb_stop = T.stop + 1
                          LIMIT 1),
-                        T.lastStation),
+                        T.nextStation),
     T.currentRail = (
                         SELECT RR.rail_id 
                         FROM EQ06_RailRoute RR 
