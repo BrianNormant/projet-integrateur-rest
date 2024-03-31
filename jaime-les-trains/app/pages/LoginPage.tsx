@@ -1,11 +1,10 @@
 import { Button, Card, Form } from "react-bootstrap"
 import "./style.css";
+import { Link } from "react-router-dom";
 
-interface LoginPageProps {
-    onClick: (x: boolean) => void
-  }
+
   
-export function LoginPage( {...props}: LoginPageProps ) {
+export function LoginPage( ) {
   return (
     <div className="d-flex h-100 justify-content-center align-items-center">
       <Card className="w-75 align-self-center">
@@ -19,7 +18,9 @@ export function LoginPage( {...props}: LoginPageProps ) {
             <Form.Label className="mb-1">{"Mot de passe"}</Form.Label>
             <Form.Control className="w-100 mb-2" type="text" placeholder="Password"></Form.Control>
             <Form.Check type="checkbox" label="Se souvenir de moi" />
-            <Button  variant="primary" className="mx-2 mt-2" onClick={() => props.onClick(true)}>{"Connexion"}</Button>
+            <Link to="/main">
+              <Button  variant="primary" className="mx-2 mt-2">{"Connexion"}</Button>
+            </Link>
           </Form>
         </Card.Body>
         <Card.Footer className="text-muted"> 

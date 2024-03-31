@@ -1,22 +1,24 @@
 'use client'
 
-import { useState } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { LoginPage } from "./pages/LoginPage";
 import { Nav, Navbar } from "react-bootstrap";
 import { MyTrainsPage } from "./pages/MyTrainsPage";
-
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, createBrowserRouter, Link, Route, RouterProvider, Routes } from "react-router-dom"
 export default function Home() {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {})
+
   return (
-    <>
-      {isLoggedIn ? (
-        <MainPage />
-      ) : (
-        <LoginPage onClick={setIsLoggedIn}/>
-      )}
-  </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/main" element={<MainPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
@@ -35,19 +37,11 @@ function Navigation() {
       <Navbar.Brand>{"J'aime les trains"}</Navbar.Brand>
       <Nav className="w-100 d-flex justify-content-between">
         <div className="d-flex">
-          <Nav.Link href="#main">{"Tableau de bord"}</Nav.Link>
-          <Nav.Link href="#trains">{"Mes Trains"}</Nav.Link>
+          <Nav.Link><Link to="/dashboard">{"Tableau de bord"}</Link></Nav.Link>
+          <Nav.Link><Link to="/main">{"Mes Trains"}</Link></Nav.Link>
         </div>
         <Nav.Link href="#profile">{"Mon profil"}</Nav.Link>
       </Nav>
     </Navbar>
-  )
-}
-
-function MainContent() {
-  return (
-    <main>
-      <p>{"This will be the main content display area"}</p>
-    </main>
   )
 }
