@@ -60,6 +60,7 @@ $possibility = create_reservation(date("Y-m-d"), $period);
 $rails = get_rails($dbh, $origin, $destination);
 
 if (!is_reservation_reserved($dbh, $rails, $possibility)) {
+	echo json_encode($possibility);
 	http_response_code(406);
 	exit;
 }

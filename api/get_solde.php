@@ -26,4 +26,3 @@ $solde = $sth->fetchAll()[0]["solde"];
 
 http_response_code(200);
 echo json_encode( array( "solde" => $solde ) );
-?>

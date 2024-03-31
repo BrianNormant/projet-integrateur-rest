@@ -19,9 +19,12 @@ api/stations : Listes des stations et leurs positions sur le reseaux
 
 api/rails : Listes des rails et leur stations de connections
 	format : [ { "id", "con1", "con2" }, ... ]
-
+api/rail/:id : Details sur un rails en particulier
+	format : {"id", "con1", "con2"}
+	return code:
+		- 404 Rail doesn't exist
 api/trains : Listes des trains en fonctionnement sur le reseau
-	Authorization : Bearer <token>
+	Authorization : <token>
 	a company token gives access to all trains owned by the company
 	an admin/maintainer token gives access to all trains on the network
 	format : [ { "id", "rail_id", "pos" }, ... ]
@@ -41,7 +44,7 @@ api/stations/:id/arrival : Liste des trains qui passeront par cette station ains
 
 
 api/train/:train/details : Tout les details sur un train circulant sur le reseau
-	Authorization : Bearer <token>
+	Authorization :  <token>
 	format : [ {
 		"id", "rail", "pos", "charge", "puissance", "company_id",
 		"route" : [ {"id", "origin", }, {"id", "stop 1"}, {"id", "stop 2"}, ..., {"id","destination"} ],
@@ -61,8 +64,8 @@ api/reservations/:origin/:destination : Liste des reversations possible pour un 
 	- 200 : OK
 
 api/list_reservations : Listes des reservations qu'une company a
-	Authorization : Bearer <token>
-	[ {id, fare, dateReserv, timeSlot, rail_id} ,...]
+	Authorization :  <token>
+	[ {id, fare, dateReserv, period, rail_id} ,...]
 
 
 PUT

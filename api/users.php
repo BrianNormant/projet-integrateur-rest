@@ -7,11 +7,12 @@ function format($row) {
 		"user_name"  =>  $row["userName"],
 		"mail"       =>  $row["mail"],
 		"company"    =>  $row["Company_id"],
+		"type"       =>  $row["CompanyType"],
 	);
 }
 include './api/connectDB.php';
 
-$sth = $dbh->query('SELECT userName, mail, Company_id FROM EQ06_Account');
+$sth = $dbh->query('SELECT userName, mail, Company_id, CompanyType FROM EQ06_Account');
 $users = array_map("format", $sth->fetchAll());
 
 echo json_encode($users);

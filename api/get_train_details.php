@@ -11,6 +11,7 @@ $token = $headers["Authorization"];
 
 include './api/connectDB.php';
 include './api/check_token.php';
+include './api/lib_reservation.php';
 
 switch(check_token($dbh, $token, null)) {
 case 1:
@@ -127,6 +128,7 @@ function format($row, $route, $rail, $sth_station) {
 		"prev_station"  =>  stationid_to_details($sth_station, $row["prev_station"]),
 		"next_station"  =>  stationid_to_details($sth_station, $row["next_station"]),
 		"route"         =>  $route,
+		"speed"         =>  get_avg_speed($row["charge"], $row["puissance"]),
 	);
 }
 

@@ -28,7 +28,8 @@ function format($row) {
 		"fare"    =>  $row["fare"],
 		"date"    =>  $row["dateReserv"],
 		"period"  =>  $row["timeSlot"],
-		"rail"    =>  $row["rail_id"]
+		"rail"    =>  $row["rail_id"],
+		"company_id" => $row["company_id"]
 	);
 }
 
@@ -51,7 +52,12 @@ http_response_code(200);
 // if company is admin, list all reservations
 if (strcmp($company_info[0]["type"], "admin") == 0) {
 	$sth = $dbh->query(<<<SQL
-	SELECT id, fare, dateReserv, timeSlot, rail_id FROM EQ06_Reservation;
+	SELECT id, fare, dateReserv, timeSlot, rail_id, company_id FROM EQ06_Reservation
+	ORDER BY dateReserv, CASE timeSlot 
+						When 'morning' then 1 
+						When 'evening' then 2 
+						When 'night'   then 3 
+						else 4 end, timeSlot;
 	SQL);
 
 	$reservations = array_map("format", $sth->fetchAll());
@@ -59,7 +65,13 @@ if (strcmp($company_info[0]["type"], "admin") == 0) {
 	// list resvervations of company
 	$company_id = $company_info[0]["id"];
 	$sth = $dbh->prepare(<<<SQL
-	SELECT id, fare, dateReserv, timeSlot, rail_id FROM EQ06_Reservation WHERE company_id = ?;
+	SELECT id, fare, dateReserv, timeSlot, rail_id, company_id FROM EQ06_Reservation 
+	WHERE company_id = ?
+	ORDER BY dateReserv, CASE timeSlot 
+					When 'morning' then 1 
+					When 'evening' then 2 
+					When 'night'   then 3 
+					else 4 end, timeSlot;
 	SQL);
 
 	$sth->execute([$company_id]);
