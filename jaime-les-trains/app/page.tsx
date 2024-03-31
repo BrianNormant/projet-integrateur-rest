@@ -6,6 +6,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { MyTrainsPage } from "./pages/MyTrainsPage";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, createBrowserRouter, Link, Route, RouterProvider, Routes } from "react-router-dom"
+import { SignupPage } from "./pages/SignupPage";
 export default function Home() {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,6 +17,7 @@ export default function Home() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/main" element={<MainPage />} />
         <Route path="/dashboard" element={<Navigation />} />
       </Routes>
@@ -41,7 +43,7 @@ function Navigation() {
           <Nav.Link><Link to="/dashboard">{"Tableau de bord"}</Link></Nav.Link>
           <Nav.Link><Link to="/main">{"Mes Trains"}</Link></Nav.Link>
         </div>
-        <Nav.Link href="#profile">{"Mon profil"}</Nav.Link>
+        <Nav.Link><Link to="/">{"Deconnexion"}</Link></Nav.Link>
       </Nav>
     </Navbar>
   )
