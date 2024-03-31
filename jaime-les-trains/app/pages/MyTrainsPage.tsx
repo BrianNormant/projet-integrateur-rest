@@ -72,7 +72,7 @@ export function MyTrainsPage( ) {
                 </Card.Body>
             </Card>
             <Button>
-                {"Ajouter un train"}
+                {"Ajouter une reservation"}
             </Button>
         </div>
     )
