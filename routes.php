@@ -3,8 +3,8 @@
 require_once __DIR__.'/router.php';
 
 $routes = array(
-["get",   '/',                                       'index.php'],
-["get",   '/index.php',                              'index.php'],
+["get",   '/',                                       '/index'],
+["get",   '/index.php',                              '/index'],
 ["get",   '/api/help',                               '/api/help.php'],
 ["get",   '/api/users',                              '/api/users.php'],
 ["get",   '/api/user/$user/solde',                   '/api/get_solde.php'],
