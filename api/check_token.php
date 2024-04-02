@@ -25,7 +25,7 @@ function check_token($dbh, $token, $user) : int {
 		$db_token = $sth->fetchAll();
 	}
 	if (sizeof($db_token) == 0) return 1;
-	if (strtotime($db_token[0]["date"]) < time()) return 2;
+	if (strtotime($db_token[0]["date"]) < time() - 60 * 60 * 12) return 2;
 	return 0;
 }
 
