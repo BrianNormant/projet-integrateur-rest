@@ -7,7 +7,6 @@ include './api/lib_reservation.php';
 
 $TIME_DELAY = 5 / 60; // in hour
 
-# TODO Handle train that have reach the final destination
 $sth = $dbh->query(<<<SQL
 UPDATE EQ06_Train T
 INNER JOIN EQ06_Route R ON T.route_id = R.id
@@ -16,7 +15,7 @@ SET T.currentRail = NULL,
 	T.nextStation = NULL,
     T.relative_position = 100,
     T.stop = NULL
-WHERE R.destination_station = T.nextStation;
+WHERE R.destination_station = T.nextStation AND T.relative_position > 99;
 SQL);
 
 printf("%s Have arrived at their final destination\n", $sth->rowCount());
@@ -50,7 +49,7 @@ printf("%s trains have reach a station and a continuing to the next rail\n", $st
 
 
 $sth = $dbh->query(<<<SQL
-SELECT T.id AS id, longueur, charge, puissance FROM EQ06_Train T
+SELECT T.id AS id, longueur, charge, puissance, relative_position AS pos FROM EQ06_Train T
 INNER JOIN EQ06_Rail RR ON T.currentRail = RR.id
 WHERE relative_position < 100;
 SQL);
@@ -58,12 +57,14 @@ SQL);
 $trains = $sth->fetchAll(PDO::FETCH_ASSOC);
 foreach($trains as $train) {
 	$speed = get_avg_speed($train["charge"], $train["puissance"]);
-	$dist = $TIME_DELAY * $speed;
-
+	$dist = $TIME_DELAY * $speed; // distance pacouru depuis la derniere update
+		
 	$newpos = $dist * 100 / $train["longueur"];
+	$newpos += $train["pos"];
 	if ($newpos > 99.5) $newpos = 100;
 
 	$id = $train["id"];
+	printf("train %d at pos %f\n", $id, $newpos);
 
 	$dbh->query("UPDATE EQ06_Train SET relative_position = $newpos WHERE id = $id;");
 }
