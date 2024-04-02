@@ -60,6 +60,7 @@ var train1 = {
 export function MyTrainsPage( ) {
 
     const [trains, setTrains] = useState([train1, {...train1, relative_position: 0.3, route: {...train1.route, path: [railCA]}}]);
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
         <div className="m-3">
@@ -71,10 +72,25 @@ export function MyTrainsPage( ) {
                     {trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
                 </Card.Body>
             </Card>
-            <Button>
-                {"Ajouter une reservation"}
-            </Button>
+            {isOpen ? <AddTrain /> : 
+                <Button onClick={() => setIsOpen(true)}>
+                    {"Ajouter une reservation"}
+                </Button>
+            }
         </div>
+    )
+}
+
+function AddTrain( {...props} ) {
+    return (
+            <Card className="p-2 mb-2">
+                <Card.Title>
+                    {"Ajouter une reservation"}
+                </Card.Title>
+                <Card.Body>
+                    {"sus"}
+                </Card.Body>
+            </Card>
     )
 }
 

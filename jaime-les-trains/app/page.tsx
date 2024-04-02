@@ -21,7 +21,7 @@ export default function Home() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/dashboard" element={<Navigation />} />
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter> 
   )
 }
 
