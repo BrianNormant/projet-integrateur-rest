@@ -8,7 +8,7 @@ GET
 api/help : affiche cette page
 
 api/users : Listes des utilisateurs
-	format: [ { user_name", "mail", "company" }, ... ]
+	format: [ { user_name", "mail", "company", "type" }, ... ]
 
 api/user/:user/solde : Solde de l utilisateur
 	require token in header
@@ -16,6 +16,9 @@ api/user/:user/solde : Solde de l utilisateur
 
 api/stations : Listes des stations et leurs positions sur le reseaux
 	format : [ { "id", "name", "pos_x", "pos_y" }, ... ]
+
+api/stations/:station : Liste des trains qui passeront par cette station
+	format : [ {"id", "ETA"}, ... ]
 
 api/rails : Listes des rails et leur stations de connections
 	format : [ { "id", "con1", "con2" }, ... ]
