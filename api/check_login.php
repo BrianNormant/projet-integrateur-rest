@@ -1,32 +1,31 @@
 <?php
 # header('Content-Type: plain/text; charset=utf-8');
 
-if (!isset($_POST["token"])) {
+
+$headers = apache_request_headers();
+if (!isset($headers["Authorization"])) {
 	http_response_code(417);
-	echo "missing token";
 	exit;
 }
+$token = $headers["Authorization"];
+
+
 
 include './api/connectDB.php';
+include './api/check_token.php';
 
-$sth = $dbh->prepare(<<<END
-SELECT T.token AS tok, T.dateExpiration AS date FROM EQ06_Token T
-INNER JOIN EQ06_Account A ON T.userUsed = A.userName
-WHERE A.userName = ? AND T.token = ?;
-END);
+$code = check_token($dbh, $token, $user);
 
-$sth->execute([$user, $_POST["token"]]);
-$data = $sth->fetchAll();
-
-if (sizeof($data) == 0) {
+switch ($code) {
+case 0: 
+	http_response_code(200);
+	break;
+case 1:
 	http_response_code(404);
-	exit;
-}
-if (strtotime($data[0]["date"]) < time()) {
+	break;
+case 2:
 	http_response_code(408);
-	exit;
-};
+	break;
+}
 
-http_response_code(200);
 ?>
-

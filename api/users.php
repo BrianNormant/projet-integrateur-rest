@@ -1,26 +1,20 @@
 <?php
-
 header('Content-Type: application/json; charset-utf-8');
-http_response_code(400);
+http_response_code(200);
 
-function formatRow($row) {
+function format($row) {
 	return array(
-		"user_name" => $row->user_name,
-		"mail" => $row->mail,
-		"company" => $row->company,
+		"user_name"  =>  $row["userName"],
+		"mail"       =>  $row["mail"],
+		"company"    =>  $row["Company_id"],
+		"type"       =>  $row["CompanyType"],
 	);
 }
-include '/api/connectDB.php';
-$sth = $dbh->query('SELECT user_name,mail,company FROM User06');
-$users = array_map("formatRow", $sth->fetchAll());
+include './api/connectDB.php';
 
-$placeholder = array(
-		format("brian",    "briannormant@bullshit.com",  "J'Aime-les-trains"),
-		format("Etienne",  "etienne@ferland.jp",         "J'Hais-les-trains"),
-		format("Java",     "java@worse.language",        "Oracle")
-);
+$sth = $dbh->query('SELECT userName, mail, Company_id, CompanyType FROM EQ06_Account');
+$users = array_map("format", $sth->fetchAll());
 
-echo json_encode($placeholder);
+echo json_encode($users);
 
 ?>
-

@@ -1,0 +1,9 @@
+[Timer]
+#OnCalendar=*-*-* *:0/5:00
+# Every 2 s
+OnCalendar=*-*-* *:*:0/2
+# Needed because by default systemd timer use a ~ 1 minute accuracy
+AccuracySec=1ms
+
+[Install]
+WantedBy=timers.target
