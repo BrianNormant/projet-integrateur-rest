@@ -14,7 +14,7 @@ include './api/lib_reservation.php';
 
 # check if token is valid
 switch (check_token($dbh, $token, null)) {
-case 1 :
+case 1:
 	http_response_code(403);
 	exit;
 case 2:
