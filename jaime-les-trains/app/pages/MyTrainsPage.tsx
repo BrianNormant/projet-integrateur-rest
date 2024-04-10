@@ -74,7 +74,7 @@ export function MyTrainsPage( ) {
             </Card>
             {isOpen ? <AddTrain /> : 
                 <Button onClick={() => setIsOpen(true)}>
-                    {"Ajouter une reservation"}
+                    {"Ajouter un train"}
                 </Button>
             }
         </div>

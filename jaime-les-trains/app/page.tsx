@@ -7,6 +7,7 @@ import { MyTrainsPage } from "./pages/MyTrainsPage";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, createBrowserRouter, Link, Route, RouterProvider, Routes } from "react-router-dom"
 import { SignupPage } from "./pages/SignupPage";
+import { MyReservationsPage } from "./pages/MyReservationsPage";
 export default function Home() {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,18 +19,27 @@ export default function Home() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/dashboard" element={<Navigation />} />
+        <Route path="/main" element={<Trains />} />
+        <Route path="/dashboard" element={<Reservations />} />
       </Routes>
     </BrowserRouter> 
   )
 }
 
-function MainPage() {
+function Trains() {
   return (
     <>
       <Navigation />
       <MyTrainsPage />
+    </>
+  )
+}
+
+function Reservations() {
+  return (
+    <>
+      <Navigation />
+      <MyReservationsPage />
     </>
   )
 }
@@ -40,7 +50,7 @@ function Navigation() {
       <Navbar.Brand>{"J'aime les trains"}</Navbar.Brand>
       <Nav className="w-100 d-flex justify-content-between">
         <div className="d-flex">
-          <Nav.Link><Link to="/dashboard">{"Tableau de bord"}</Link></Nav.Link>
+          <Nav.Link><Link to="/dashboard">{"Mes Reservations"}</Link></Nav.Link>
           <Nav.Link><Link to="/main">{"Mes Trains"}</Link></Nav.Link>
         </div>
         <Nav.Link><Link to="/">{"Deconnexion"}</Link></Nav.Link>
