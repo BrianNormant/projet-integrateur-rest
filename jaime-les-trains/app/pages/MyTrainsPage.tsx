@@ -1,5 +1,6 @@
+import { create } from "domain";
 import { useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Form } from "react-bootstrap";
 
 var stationA = {
     name: "Station A",
@@ -72,7 +73,7 @@ export function MyTrainsPage( ) {
                     {trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
                 </Card.Body>
             </Card>
-            {isOpen ? <AddTrain /> : 
+            {isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
                 <Button onClick={() => setIsOpen(true)}>
                     {"Ajouter un train"}
                 </Button>
@@ -81,14 +82,73 @@ export function MyTrainsPage( ) {
     )
 }
 
-function AddTrain( {...props} ) {
+interface AddTrainProps {
+    addTrain: (x: Train) => void
+}
+
+function AddTrain( {...props}: AddTrainProps ) {
+
+    function createTrain(origin: string, destination: string) {
+        let originStation: Station = {
+            name: origin,
+            position_x: 10,
+            position_y: 10,
+            free: true
+        }
+
+        let destinationStation: Station = {
+            name: destination,
+            position_x: 10,
+            position_y: 10,
+            free: true
+        }
+
+        let rail: Rail = {
+            connection1: originStation,
+            connection2: destinationStation,
+            max_grade: 100,
+            length: 1
+        }
+
+        return {
+            route: {
+                origin: originStation,
+                destination: destinationStation,
+                path: [rail]
+            },
+            currentRail: rail,
+            lastStation: originStation,
+            nextStation: destinationStation,
+            load: 100,
+            power: 100,
+            relative_position: 0,
+        }
+    }
+
+    const [origin, setOrigin] = useState("Station A");
+    const [dest, setDest] = useState("Station A");
+
     return (
             <Card className="p-2 mb-2">
                 <Card.Title>
-                    {"Ajouter une reservation"}
+                    {"Ajouter un train"}
                 </Card.Title>
                 <Card.Body>
-                    {"sus"}
+                    <Form>
+                        <Form.Select onChange={e => setOrigin(e.target.value)}>
+                            <option>{"Station A"}</option>
+                            <option>{"Station B"}</option>
+                            <option>{"Station C"}</option>
+                        </Form.Select>
+                        <Form.Select onChange={e => setDest(e.target.value)}>
+                            <option>{"Station A"}</option>
+                            <option>{"Station B"}</option>
+                            <option>{"Station C"}</option>
+                        </Form.Select>
+                        <Button variant="primary" onClick={() => props.addTrain(createTrain(origin, dest))}>
+                            {"Ajouter"}
+                        </Button>
+                    </Form>
                 </Card.Body>
             </Card>
     )
