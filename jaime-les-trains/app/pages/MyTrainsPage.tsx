@@ -1,6 +1,7 @@
 import { create } from "domain";
 import { useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
+import { useTrainsList } from "../hooks/useTrainsList";
 
 var stationA = {
     name: "Station A",
@@ -62,6 +63,8 @@ export function MyTrainsPage( ) {
 
     const [trains, setTrains] = useState([train1, {...train1, relative_position: 0.3, route: {...train1.route, path: [railCA]}}]);
     const [isOpen, setIsOpen] = useState(false)
+
+    useTrainsList();
 
     return (
         <div className="m-3">
