@@ -112,7 +112,7 @@ export function loadTrains(token: string, callbk: (t: Train) => void) {
         .then(data => {
             console.log(data)
           if (data) {
-            data.map(x => {
+            data.map((x: { rail_id: any; id: number; }) => {
                     console.log(x)
                     if (x.rail_id) addTrainData(x.id, token, callbk)
             })
