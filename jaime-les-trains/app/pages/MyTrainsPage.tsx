@@ -1,7 +1,7 @@
 import { create } from "domain";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
-import { useTrainsList } from "../hooks/useTrainsList";
+import { authProps } from "../page";
 
 var stationA = {
     name: "Station A",
@@ -59,12 +59,17 @@ var train1 = {
     relative_position: 0.8,
 }
 
-export function MyTrainsPage( ) {
+export function MyTrainsPage( {...props}: authProps ) {
 
-    const [trains, setTrains] = useState([train1, {...train1, relative_position: 0.3, route: {...train1.route, path: [railCA]}}]);
+    const [trains, setTrains] = useState<Train[]>([]);
     const [isOpen, setIsOpen] = useState(false)
 
-    useTrainsList();
+    function loadTrain(train: Train) {
+        setTrains([...trains, train])
+    }
+
+    if (!trains.length) loadTrains(props.token, loadTrain);
+    console.log(trains)
 
     return (
         <div className="m-3">
@@ -73,23 +78,78 @@ export function MyTrainsPage( ) {
                     {"Mes Trains"}
                 </Card.Title>
                 <Card.Body>
-                    {trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
+                    {trains.length == 0 ? 
+                    <p>{"Vous n'avez aucun train actuellement en fonctionnement"}</p> :
+                    trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
                 </Card.Body>
             </Card>
-            {isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
+            <Button onClick={() => {setTrains([]);loadTrains(props.token, loadTrain)}}>
+                    {"Rafraichir"}
+                </Button>
+            {/*isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
                 <Button onClick={() => setIsOpen(true)}>
                     {"Ajouter un train"}
                 </Button>
-            }
+    */}
         </div>
     )
 }
+
+export function loadTrains(token: string, callbk: (t: Train) => void) {
+    const PATH = 'https://equipe500.tch099.ovh/projet6/api/trains'
+
+    console.log("called")
+    
+      const requestOptions = {
+        method: "GET",
+        headers: { 'Authorization': token},
+      };
+      fetch(PATH, requestOptions)
+        .then(response => {
+          if (!response.ok) return null;
+          else return response.json()
+        })
+        .then(data => {
+            console.log(data)
+          if (data) {
+            data.map(x => {
+                    console.log(x)
+                    if (x.rail_id) addTrainData(x.id, token, callbk)
+            })
+          } else {
+            return
+          }
+        });
+    }
+
+
+function addTrainData(trainid: number, token: string, callbk: (t: Train) => void) {
+    const PATH = 'https://equipe500.tch099.ovh/projet6/api/train/'+trainid+'/details'
+    
+      const requestOptions = {
+        method: "GET",
+        headers: { 'Authorization': token},
+      };
+      fetch(PATH, requestOptions)
+        .then(response => {
+          if (!response.ok) return null;
+          else return response.json()
+        })
+        .then(data => {
+          if (data) {
+            console.log(data)
+            callbk(data)
+          } else {
+            return
+          }
+        }).catch(() => console.log("nuh uh"));
+    }
 
 interface AddTrainProps {
     addTrain: (x: Train) => void
 }
 
-function AddTrain( {...props}: AddTrainProps ) {
+/*function AddTrain( {...props}: AddTrainProps ) {
 
     function createTrain(origin: string, destination: string) {
         let originStation: Station = {
@@ -155,7 +215,7 @@ function AddTrain( {...props}: AddTrainProps ) {
                 </Card.Body>
             </Card>
     )
-}
+}/*/
 
 interface TrainComponentProps {
     train: Train
@@ -170,15 +230,15 @@ function TrainComponent( {...props}: TrainComponentProps) {
 
     //Note - On assume ici que chaque rail est traverse au maximum une seule fois
     let currentTrackIndex: number = 0;
-    props.train.route.path.forEach((x, i) => x == props.train.currentRail ? currentTrackIndex = i : "")
+    props.train.route.forEach((x, i) => x == props.train.next_station ? currentTrackIndex = i : "")
 
-    let trackWidth: number = (width-150)/props.train.route.path.length;
+    let trackWidth: number = (width-150)/props.train.route.length;
 
     return (
         <div>
             <div className="d-flex justify-content-between">
-                {props.train.route.path.map((x, i) => <StationComponent key={i} stationName={x.connection1.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={i==currentTrackIndex ? props.train.relative_position * trackWidth : (i < currentTrackIndex ? trackWidth : 0)}/>)}
-                <StationComponent key={0} stationName={props.train.route.destination.name} noTrack={true} />
+                {props.train.route.map((x, i) => <StationComponent key={i} stationName={x.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={i==currentTrackIndex ? props.train.pos/100 * trackWidth : (i < currentTrackIndex ? trackWidth : 0)}/>)}
+                <StationComponent key={0} stationName={"test"} noTrack={true} />
             </div>
         </div>
     )

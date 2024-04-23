@@ -1,10 +1,12 @@
 interface Train {
-    route: Route
-    currentRail: Rail
-    lastStation: Station
-    nextStation: Station
-    load: number
-    power: number
-    relative_position: number
+    id: number
+    company_id: String
+    route: Station[]
+    rail: Rail
+    prev_station: Station
+    next_station: Station
+    charge: number
+    speed: number
+    pos: number
 }
   

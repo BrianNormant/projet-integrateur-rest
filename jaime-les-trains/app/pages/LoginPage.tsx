@@ -3,9 +3,11 @@ import "./style.css";
 import { Link, Navigate } from "react-router-dom";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-
+interface LoginPageProps {
+  fcttoken: Dispatch<SetStateAction<string>>
+}
   
-export function LoginPage( ) {
+export function LoginPage( {...props}: LoginPageProps ) {
 
   //States
   const [firstPass, setFirstPass] = useState(true)
@@ -19,6 +21,7 @@ export function LoginPage( ) {
   }
 
   if (token.length > 4) {
+    props.fcttoken(token)
     return (<Navigate to="/main" />)
   }
 

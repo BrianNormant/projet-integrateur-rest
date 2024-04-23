@@ -10,28 +10,34 @@ import { SignupPage } from "./pages/SignupPage";
 import { MyReservationsPage } from "./pages/MyReservationsPage";
 export default function Home() {
 
+  const [token, setToken] = useState("");
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage fcttoken={setToken}/>} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/main" element={<Trains />} />
-        <Route path="/dashboard" element={<Reservations />} />
+        <Route path="/main" element={<Trains token={token}/>} />
+        <Route path="/dashboard" element={<Reservations token={token}/>} />
       </Routes>
     </BrowserRouter> 
   )
 }
 
-function Trains() {
+export interface authProps {
+  token: string
+}
+
+function Trains( {...props}: authProps ) {
   return (
     <>
       <Navigation />
-      <MyTrainsPage />
+      <MyTrainsPage token={props.token}/>
     </>
   )
 }
 
-function Reservations() {
+function Reservations( {...props}: authProps ) {
   return (
     <>
       <Navigation />

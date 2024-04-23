@@ -1,6 +1,5 @@
 interface Rail {
-    connection1: Station,
-    connection2: Station,
-    max_grade: number,
-    length: number,
+    id: number,
+    con1: Station,
+    con2: Station,
 }
