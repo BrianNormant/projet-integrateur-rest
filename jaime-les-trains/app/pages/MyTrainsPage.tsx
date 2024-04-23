@@ -8,7 +8,7 @@ let buffer_trains: Train[] = []
 export function MyTrainsPage( {...props}: authProps ) {
 
     const [trains, setTrains] = useState<Train[]>([]);
-    const [isOpen, setIsOpen] = useState(false)
+    //const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => loadTrains(props.token, buffer_trains, setTrains), []);
 

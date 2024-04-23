@@ -17,7 +17,9 @@ export function MyReservationsPage( {...props}: authProps) {
                     {"Mes Reservations"}
                 </Card.Title>
                 <Card.Body>
-                    
+                    {res.length == 0 ? 
+                        <p>{"Vous n'avez aucune reservation"}</p> :
+                    res.map((x, i) => <ReservationComponent key={i} res={x}/>)}
                 </Card.Body>
             </Card>
             <Button onClick={() => {}}>
@@ -30,6 +32,20 @@ export function MyReservationsPage( {...props}: authProps) {
             }
         </div>
     )
+
+function ReservationComponent({...props}: {res: Reservation}) {
+    return (
+        <Card className="p-1 mb-2">
+            <Card.Title className="">
+                <p>{"Reservation #" + props.res.id}</p>
+                <p>{props.res.dateReserv}</p>
+            </Card.Title>
+            <Card.Body>
+
+            </Card.Body>
+        </Card>
+    )
+}
 
 function loadReservations(token: string, callbk: Dispatch<SetStateAction<Reservation[]>>) {
         const PATH = 'https://equipe500.tch099.ovh/projet6/api/list_reservations'

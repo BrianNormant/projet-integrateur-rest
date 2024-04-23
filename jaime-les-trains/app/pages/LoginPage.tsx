@@ -40,14 +40,14 @@ export function LoginPage( {...props}: LoginPageProps ) {
             <Form.Label className="mb-1">{"Mot de passe"}</Form.Label>
             {!firstPass && !password ? <p>{"Vous devez entrer un mot de passe"}</p> : ""}
             <Form.Control className="w-100 mb-2" type="text" placeholder="Password" onChange={e => setPassword(e.target.value)}></Form.Control>
-            <Form.Check type="checkbox" label="Se souvenir de moi" />
+            {/*<Form.Check type="checkbox" label="Se souvenir de moi" />*/}
             {token == "n/a" ? <p>{"Votre nom d'utilisateur ou mot de passe est incorrect"}</p> : ""}
             <Button variant="primary" className="mx-2 mt-2" onClick={e => onSubmitPressed()}>{"Connexion"}</Button>
           </Form>
         </Card.Body>
-        <Card.Footer className="text-muted"> 
+        {/*<Card.Footer className="text-muted"> 
           {"Vous ne possedez pas de compte?"} <Link to="/signup" className="hoverable">{"Creez-en un!"}</Link>
-        </Card.Footer>
+  </Card.Footer>*/}
       </Card>
     </div>
   )
