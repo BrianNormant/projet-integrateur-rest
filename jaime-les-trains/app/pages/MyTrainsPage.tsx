@@ -14,6 +14,16 @@ export function MyTrainsPage( {...props}: authProps ) {
 
     return (
         <div className="m-3">
+            <div className="mb-3">
+                <Button className="me-2" onClick={() => {setTrains([]);buffer_trains=[];loadTrains(props.token, buffer_trains, setTrains)}}>
+                        {"Rafraichir"}
+                    </Button>
+                {/*isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
+                    <Button onClick={() => setIsOpen(true)}>
+                        {"Ajouter un train"}
+                    </Button>
+                    */}
+            </div>
             <Card className="p-2 mb-2">
                 <Card.Title>
                     {"Mes Trains"}
@@ -24,14 +34,7 @@ export function MyTrainsPage( {...props}: authProps ) {
                     trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
                 </Card.Body>
             </Card>
-            <Button onClick={() => {setTrains([]);buffer_trains=[];loadTrains(props.token, buffer_trains, setTrains)}}>
-                    {"Rafraichir"}
-                </Button>
-            {/*isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
-                <Button onClick={() => setIsOpen(true)}>
-                    {"Ajouter un train"}
-                </Button>
-                    */}
+            
         </div>
     )
 }

@@ -13,6 +13,16 @@ export function MyReservationsPage( {...props}: authProps) {
 
     return (
         <div className="m-3">
+            <div className="mb-3">
+                <Button className="me-2" onClick={() => {loadReservations(props.token, setRes)}}>
+                        {"Rafraichir"}
+                    </Button>
+                {isOpen ? <AddReservation token={props.token}/> : 
+                    <Button onClick={() => setIsOpen(true)}>
+                        {"Ajouter une reservation"}
+                    </Button>
+                }
+            </div>
             <Card className="p-2 mb-2">
                 <Card.Title>
                     {"Mes Reservations"}
@@ -23,14 +33,6 @@ export function MyReservationsPage( {...props}: authProps) {
                     res.map((x, i) => <ReservationComponent key={i} res={x}/>)}
                 </Card.Body>
             </Card>
-            <Button onClick={() => {loadReservations(props.token, setRes)}}>
-                    {"Rafraichir"}
-                </Button>
-            {isOpen ? <AddReservation token={props.token}/> : 
-                <Button onClick={() => setIsOpen(true)}>
-                    {"Ajouter une reservation"}
-                </Button>
-            }
         </div>
     )
 }
