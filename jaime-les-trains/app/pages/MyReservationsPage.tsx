@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Form, InputGroup } from "react-bootstrap";
 import { authProps } from "../page";
+import internal from "stream";
 
 export function MyReservationsPage( {...props}: authProps) {
 
@@ -25,13 +26,14 @@ export function MyReservationsPage( {...props}: authProps) {
             <Button onClick={() => {loadReservations(props.token, setRes)}}>
                     {"Rafraichir"}
                 </Button>
-            {isOpen ? <AddReservation /> : 
+            {isOpen ? <AddReservation token={props.token}/> : 
                 <Button onClick={() => setIsOpen(true)}>
                     {"Ajouter une reservation"}
                 </Button>
             }
         </div>
     )
+}
 
 function ReservationComponent({...props}: {res: Reservation}) {
     return (
@@ -74,16 +76,96 @@ function loadReservations(token: string, callbk: Dispatch<SetStateAction<Reserva
             });
         }
 
-function AddReservation( {...props} ) {
+        interface StationDetail {
+            id: number,
+            name: string,
+            pos_x: string,
+            pos_y: string
+        }
+
+function AddReservation( {...props}: authProps ) {
+    const [stations, setStations] = useState<StationDetail[]>([])
+    const [origin, setOrigin] = useState(0);
+    const [dest, setDest] = useState(0);
+    const [plage, setPlage] = useState("evening")
+    const [date, setDate] = useState("2024-04-24")
+
+    useEffect(() => loadStations(setStations), [])
+
+    function loadStations(callbk: Dispatch<SetStateAction<StationDetail[]>>) {
+        const PATH = 'https://equipe500.tch099.ovh/projet6/api/stations'
+        
+        const requestOptions = {
+            method: "GET",
+        };
+        fetch(PATH, requestOptions)
+            .then(response => {
+            if (!response.ok) return null;
+            else return response.json()
+            })
+            .then(data => {
+            if (data) {
+                return(data)
+            } else {
+                return []
+            }
+            }).then(data => callbk(data)).catch(() => console.log("nuh uh"));
+        }
+
+    function findStationFromName(name: string): number {
+        let returnval = 0
+        stations.forEach(x => {
+            if (x.name == name) returnval = x.id
+        })
+
+        return returnval
+    }
+
+    function stationOptionComponent(onChange:Dispatch<SetStateAction<number>>): JSX.Element {
+        return (
+            <Form.Select onChange={e => onChange(findStationFromName(e.target.value))}>
+                {stations.map(x => <option key={x.id}>{x.name}</option>)}
+            </Form.Select>
+        )
+    }
+
+    function addReservation(token: string, origin: number, destination: number, date: string, period: string) {
+        const PATH = 'https://equipe500.tch099.ovh/projet6/api/reservations/'+origin+'/'+destination+'?date='+date+'&period='+period
+        console.log(PATH)
+
+        const requestOptions = {
+            method: "PUT",
+            headers: { 'Authorization': token},
+        };
+        fetch(PATH, requestOptions)
+            .then(response => {
+            return response.status
+            })
+            .then(data => console.log(data));
+    }
+
     return (
-            <Card className="p-2 mb-2">
+            <Card className="p-2 my-2">
                 <Card.Title>
                     {"Ajouter une reservation"}
                 </Card.Title>
                 <Card.Body>
-                    {"sus"}
+                    <Form>
+                        <div className="d-flex">
+                            {stationOptionComponent(setOrigin)}
+                            {stationOptionComponent(setDest)}
+                        </div>
+                        <Form.Select onChange={e => setPlage(e.target.value)}>
+                            <option>{"morning"}</option>
+                            <option>{"evening"}</option>
+                            <option>{"night"}</option>
+                        </Form.Select>
+                        <Form.Control onChange={(e) => setDate(e.target.value)} type="date" placeholder="name@example.com" />
+                        <Button variant="primary" onClick={() => addReservation(props.token, origin, dest, date, plage)}>
+                            {"Ajouter"}
+                        </Button>
+                    </Form>
                 </Card.Body>
             </Card>
-        )
-    }
+    );
 }
