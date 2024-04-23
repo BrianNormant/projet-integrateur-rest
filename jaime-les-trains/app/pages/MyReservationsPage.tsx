@@ -22,7 +22,7 @@ export function MyReservationsPage( {...props}: authProps) {
                     res.map((x, i) => <ReservationComponent key={i} res={x}/>)}
                 </Card.Body>
             </Card>
-            <Button onClick={() => {}}>
+            <Button onClick={() => {loadReservations(props.token, setRes)}}>
                     {"Rafraichir"}
                 </Button>
             {isOpen ? <AddReservation /> : 
@@ -36,12 +36,18 @@ export function MyReservationsPage( {...props}: authProps) {
 function ReservationComponent({...props}: {res: Reservation}) {
     return (
         <Card className="p-1 mb-2">
-            <Card.Title className="">
+            <Card.Title className="mb-0">
                 <p>{"Reservation #" + props.res.id}</p>
-                <p>{props.res.dateReserv}</p>
             </Card.Title>
-            <Card.Body>
-
+            <Card.Body className="p-1 d-flex justify-content-between">
+                <div>
+                    <p className="mb-1">{"Nom de la compagnie: " + props.res.company_id}</p>
+                    <p className="mb-1">{"Date: " + props.res.date}</p>
+                    <p className="mb-1">{"Plage Horaire: " + props.res.period}</p>
+                </div>
+                <div>
+                    <p  className="mb-1">{"ID du rail: " + props.res.rail}</p>
+                </div>
             </Card.Body>
         </Card>
     )
@@ -68,16 +74,16 @@ function loadReservations(token: string, callbk: Dispatch<SetStateAction<Reserva
             });
         }
 
-    function AddReservation( {...props} ) {
-        return (
-                <Card className="p-2 mb-2">
-                    <Card.Title>
-                        {"Ajouter une reservation"}
-                    </Card.Title>
-                    <Card.Body>
-                        {"sus"}
-                    </Card.Body>
-                </Card>
+function AddReservation( {...props} ) {
+    return (
+            <Card className="p-2 mb-2">
+                <Card.Title>
+                    {"Ajouter une reservation"}
+                </Card.Title>
+                <Card.Body>
+                    {"sus"}
+                </Card.Body>
+            </Card>
         )
     }
 }

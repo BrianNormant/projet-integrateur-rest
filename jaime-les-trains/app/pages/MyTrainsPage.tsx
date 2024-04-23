@@ -174,15 +174,15 @@ function TrainComponent( {...props}: TrainComponentProps) {
 
     //Note - On assume ici que chaque rail est traverse au maximum une seule fois
     let currentTrackIndex: number = 0;
-    props.train.route.forEach((x, i) => x == props.train.next_station ? currentTrackIndex = i : "")
+    console.log(props.train)
+    props.train.route.forEach((x, i) => x.name == props.train.next_station.name ? currentTrackIndex = i : "")
 
-    let trackWidth: number = (width)/props.train.route.length;
+    let trackWidth: number = (width-150)/(props.train.route.length-1);
 
     return (
         <div>
             <div className="d-flex justify-content-between">
-                {props.train.route.map((x, i) => <StationComponent key={i} stationName={x.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={i==currentTrackIndex ? props.train.pos/100 * trackWidth : (i < currentTrackIndex ? trackWidth : 0)}/>)}
-                <StationComponent key={0} stationName={"test"} noTrack={true} />
+                {props.train.route.map((x, i) => <StationComponent key={i} noTrack={i==props.train.route.length-1} stationName={x.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={i==currentTrackIndex ? props.train.pos/100 * trackWidth : (i < currentTrackIndex ? trackWidth : 0)}/>)}
             </div>
         </div>
     )

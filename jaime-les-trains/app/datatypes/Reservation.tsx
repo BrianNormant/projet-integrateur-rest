@@ -2,7 +2,7 @@ interface Reservation {
     id: number,
     company_id: string,
     fare: string,
-    dateReserv: string,
+    date: string,
     period: string,
-    rail_id: number,
+    rail: number,
 }
