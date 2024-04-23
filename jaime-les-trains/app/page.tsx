@@ -9,10 +9,6 @@ import { BrowserRouter, createBrowserRouter, Link, Route, RouterProvider, Routes
 import { SignupPage } from "./pages/SignupPage";
 import { MyReservationsPage } from "./pages/MyReservationsPage";
 export default function Home() {
-  
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {})
 
   return (
     <BrowserRouter>
