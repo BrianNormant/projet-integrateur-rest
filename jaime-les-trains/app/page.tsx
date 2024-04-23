@@ -41,7 +41,7 @@ function Reservations( {...props}: authProps ) {
   return (
     <>
       <Navigation />
-      <MyReservationsPage />
+      <MyReservationsPage token={props.token} />
     </>
   )
 }
