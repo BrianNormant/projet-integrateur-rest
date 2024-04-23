@@ -3,73 +3,14 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { authProps } from "../page";
 
-var stationA = {
-    name: "Station A",
-    position_x: 1,
-    position_y: 1,
-    free: true,
-}
-
-var stationB = {
-    name: "Station B",
-    position_x: 1,
-    position_y: 2,
-    free: true,
-}
-
-var stationC = {
-    name: "Susmogus",
-    position_x: 2,
-    position_y: 1,
-    free: true,
-}
-
-var railAB = {
-    connection1: stationA,
-    connection2: stationB,
-    max_grade: 100,
-    length: 1
-}
-
-var railBC = {
-    connection1: stationB,
-    connection2: stationC,
-    max_grade: 100,
-    length: 1
-}
-
-var railCA = {
-    connection1: stationC,
-    connection2: stationA,
-    max_grade: 100,
-    length: 1
-}
-
-var train1 = {
-    route: {
-        origin: stationA,
-        destination: stationA,
-        path: [railAB, railBC, railCA]
-    },
-    currentRail: railBC,
-    lastStation: stationA,
-    nextStation: stationB,
-    load: 100,
-    power: 100,
-    relative_position: 0.8,
-}
+let buffer_trains: Train[] = []
 
 export function MyTrainsPage( {...props}: authProps ) {
 
     const [trains, setTrains] = useState<Train[]>([]);
     const [isOpen, setIsOpen] = useState(false)
 
-    function loadTrain(train: Train) {
-        setTrains([...trains, train])
-    }
-
-    if (!trains.length) loadTrains(props.token, loadTrain);
-    console.log(trains)
+    useEffect(() => loadTrains(props.token, buffer_trains, setTrains), []);
 
     return (
         <div className="m-3">
@@ -83,22 +24,20 @@ export function MyTrainsPage( {...props}: authProps ) {
                     trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
                 </Card.Body>
             </Card>
-            <Button onClick={() => {setTrains([]);loadTrains(props.token, loadTrain)}}>
+            <Button onClick={() => {setTrains([]);buffer_trains=[];loadTrains(props.token, buffer_trains, setTrains)}}>
                     {"Rafraichir"}
                 </Button>
             {/*isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
                 <Button onClick={() => setIsOpen(true)}>
                     {"Ajouter un train"}
                 </Button>
-    */}
+                    */}
         </div>
     )
 }
 
-export function loadTrains(token: string, callbk: (t: Train) => void) {
+export function loadTrains(token: string, buffer: Train[], callbk: Dispatch<SetStateAction<Train[]>>) {
     const PATH = 'https://equipe500.tch099.ovh/projet6/api/trains'
-
-    console.log("called")
     
       const requestOptions = {
         method: "GET",
@@ -110,20 +49,18 @@ export function loadTrains(token: string, callbk: (t: Train) => void) {
           else return response.json()
         })
         .then(data => {
-            console.log(data)
           if (data) {
-            data.map((x: { rail_id: any; id: number; }) => {
-                    console.log(x)
-                    if (x.rail_id) addTrainData(x.id, token, callbk)
+            let trains: Train[] = []
+            data.map((x: { rail_id: any; id: number; }, i: number) => {
+                    if (x.rail_id) addTrainData(x.id, token, trains, i==data.length-1, callbk)
             })
           } else {
-            return
+            return []
           }
         });
     }
 
-
-function addTrainData(trainid: number, token: string, callbk: (t: Train) => void) {
+function addTrainData(trainid: number, token: string, buffer: Train[], last:boolean, callbk: Dispatch<SetStateAction<Train[]>>) {
     const PATH = 'https://equipe500.tch099.ovh/projet6/api/train/'+trainid+'/details'
     
       const requestOptions = {
@@ -137,59 +74,64 @@ function addTrainData(trainid: number, token: string, callbk: (t: Train) => void
         })
         .then(data => {
           if (data) {
-            console.log(data)
-            callbk(data)
+            buffer.push(data)
+            return buffer
           } else {
-            return
+            return []
           }
-        }).catch(() => console.log("nuh uh"));
+        }).then(
+            data => {if (last) callbk(data)}
+        ).catch(() => console.log("nuh uh"));
     }
 
 interface AddTrainProps {
     addTrain: (x: Train) => void
 }
 
-/*function AddTrain( {...props}: AddTrainProps ) {
+interface StationDetail {
+    id: number,
+    name: string,
+    pos_x: string,
+    pos_y: string
+}
 
-    function createTrain(origin: string, destination: string) {
-        let originStation: Station = {
-            name: origin,
-            position_x: 10,
-            position_y: 10,
-            free: true
-        }
+function AddTrain( {...props}: AddTrainProps ) {
 
-        let destinationStation: Station = {
-            name: destination,
-            position_x: 10,
-            position_y: 10,
-            free: true
-        }
-
-        let rail: Rail = {
-            connection1: originStation,
-            connection2: destinationStation,
-            max_grade: 100,
-            length: 1
-        }
-
-        return {
-            route: {
-                origin: originStation,
-                destination: destinationStation,
-                path: [rail]
-            },
-            currentRail: rail,
-            lastStation: originStation,
-            nextStation: destinationStation,
-            load: 100,
-            power: 100,
-            relative_position: 0,
-        }
-    }
-
+    const [stations, setStations] = useState<StationDetail[]>([])
     const [origin, setOrigin] = useState("Station A");
     const [dest, setDest] = useState("Station A");
+
+    useEffect(() => loadStations(setStations), [])
+    console.log(stations)
+
+    function loadStations(callbk: Dispatch<SetStateAction<StationDetail[]>>) {
+        console.log("called")
+        const PATH = 'https://equipe500.tch099.ovh/projet6/api/stations'
+        
+        const requestOptions = {
+            method: "GET",
+        };
+        fetch(PATH, requestOptions)
+            .then(response => {
+            if (!response.ok) return null;
+            else return response.json()
+            })
+            .then(data => {
+            if (data) {
+                return(data)
+            } else {
+                return []
+            }
+            }).then(data => callbk(data)).catch(() => console.log("nuh uh"));
+        }
+
+    function stationOptionComponent(): JSX.Element {
+        return (
+            <>
+                {stations.forEach(x => <option key={x.id}>{x.name}</option>)}
+            </>
+        )
+    }
 
     return (
             <Card className="p-2 mb-2">
@@ -199,23 +141,25 @@ interface AddTrainProps {
                 <Card.Body>
                     <Form>
                         <Form.Select onChange={e => setOrigin(e.target.value)}>
-                            <option>{"Station A"}</option>
-                            <option>{"Station B"}</option>
-                            <option>{"Station C"}</option>
+                            <>{stations.forEach(x => <OptionComponent x={x}/>)}</>
                         </Form.Select>
                         <Form.Select onChange={e => setDest(e.target.value)}>
-                            <option>{"Station A"}</option>
-                            <option>{"Station B"}</option>
-                            <option>{"Station C"}</option>
+                            {stationOptionComponent()}
                         </Form.Select>
-                        <Button variant="primary" onClick={() => props.addTrain(createTrain(origin, dest))}>
+                        <Button variant="primary" onClick={() => console.log(origin, dest)}>
                             {"Ajouter"}
                         </Button>
                     </Form>
                 </Card.Body>
             </Card>
     )
-}/*/
+}
+
+function OptionComponent( {...props}: {x: StationDetail} ) {
+    return (
+        <option>{props.x.name}</option>
+    )
+}
 
 interface TrainComponentProps {
     train: Train
@@ -232,7 +176,7 @@ function TrainComponent( {...props}: TrainComponentProps) {
     let currentTrackIndex: number = 0;
     props.train.route.forEach((x, i) => x == props.train.next_station ? currentTrackIndex = i : "")
 
-    let trackWidth: number = (width-150)/props.train.route.length;
+    let trackWidth: number = (width)/props.train.route.length;
 
     return (
         <div>
