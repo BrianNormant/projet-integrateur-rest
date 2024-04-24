@@ -8,6 +8,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, createBrowserRouter, Link, Route, RouterProvider, Routes } from "react-router-dom"
 import { SignupPage } from "./pages/SignupPage";
 import { MyReservationsPage } from "./pages/MyReservationsPage";
+
 export default function Home() {
 
   const [token, setToken] = useState("");
