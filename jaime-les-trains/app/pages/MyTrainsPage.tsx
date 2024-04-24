@@ -8,7 +8,7 @@ let buffer_trains: Train[] = []
 export function MyTrainsPage( {...props}: authProps ) {
 
     const [trains, setTrains] = useState<SimpleTrain[]>([]);
-    //const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => loadTrains(props.token, buffer_trains, setTrains), []);
 
@@ -18,11 +18,11 @@ export function MyTrainsPage( {...props}: authProps ) {
                 <Button className="me-2" onClick={() => {setTrains([]);buffer_trains=[];loadTrains(props.token, buffer_trains, setTrains)}}>
                         {"Rafraichir"}
                     </Button>
-                {/*isOpen ? <AddTrain addTrain={(x) => {setTrains([...trains, x])}}/> : 
-                    <Button onClick={() => setIsOpen(true)}>
+                {isOpen ? <AddTrain token={props.token} /> : 
+                    <Button onClick={(e) => setIsOpen(true)}>
                         {"Ajouter un train"}
                     </Button>
-                    */}
+                }
             </div>
             <Card className="p-2 mb-2">
                 <Card.Title>
@@ -87,7 +87,7 @@ function addTrainData(trainid: number, token: string, callbk: Dispatch<SetStateA
     }
 
 interface AddTrainProps {
-    addTrain: (x: Train) => void
+    token: string
 }
 
 interface StationDetail {
@@ -106,8 +106,10 @@ interface SimpleTrain {
 function AddTrain( {...props}: AddTrainProps ) {
 
     const [stations, setStations] = useState<StationDetail[]>([])
-    const [origin, setOrigin] = useState("Station A");
-    const [dest, setDest] = useState("Station A");
+    const [origin, setOrigin] = useState(0);
+    const [dest, setDest] = useState(0);
+    const [power, setPower] = useState("")
+    const [load, setLoad] = useState("")
 
     useEffect(() => loadStations(setStations), [])
     console.log(stations)
@@ -136,25 +138,56 @@ function AddTrain( {...props}: AddTrainProps ) {
     function stationOptionComponent(): JSX.Element {
         return (
             <>
-                {stations.forEach(x => <option key={x.id}>{x.name}</option>)}
+                {stations.map(x => <option key={x.id}>{x.name}</option>)}
             </>
         )
     }
 
+    function findStationFromName(name: string): number {
+        let returnval = 0
+        stations.forEach(x => {
+            if (x.name == name) returnval = x.id
+        })
+
+        return returnval
+    }
+
+    function addTrain(token: string, origin: number, destination: number, power: string, load: string) {
+        const PATH = 'https://equipe500.tch099.ovh/projet6/api/train/'+origin+'/'+destination
+        console.log(PATH)
+
+        const requestOptions = {
+            method: "PUT",
+            headers: { 'Authorization': token},
+            body: JSON.stringify({load, power})
+        };
+        fetch(PATH, requestOptions)
+            .then(response => {
+            return response.status
+            })
+            .then(data => console.log(data));
+    }
+
     return (
-            <Card className="p-2 mb-2">
+            <Card className="p-2 my-2">
                 <Card.Title>
                     {"Ajouter un train"}
                 </Card.Title>
                 <Card.Body>
                     <Form>
-                        <Form.Select onChange={e => setOrigin(e.target.value)}>
-                            <>{stations.forEach(x => <OptionComponent x={x}/>)}</>
-                        </Form.Select>
-                        <Form.Select onChange={e => setDest(e.target.value)}>
+                        <div className="d-flex">
+                        <Form.Select onChange={e => setOrigin(findStationFromName(e.target.value))}>
                             {stationOptionComponent()}
                         </Form.Select>
-                        <Button variant="primary" onClick={() => console.log(origin, dest)}>
+                        <Form.Select onChange={e => setDest(findStationFromName(e.target.value))}>
+                            {stationOptionComponent()}
+                        </Form.Select>
+                        </div>
+                        <div className="d-flex">
+                            <Form.Control className="mb-1" onChange={e => setPower(e.target.value)} />
+                            <Form.Control className="mb-1" onChange={e => setLoad(e.target.value)} />
+                        </div>
+                        <Button variant="primary" onClick={() => addTrain(props.token, origin, dest, power, load)}>
                             {"Ajouter"}
                         </Button>
                     </Form>

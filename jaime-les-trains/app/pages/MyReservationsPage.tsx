@@ -19,7 +19,7 @@ export function MyReservationsPage( {...props}: MyReservationsPageProps) {
     return (
         <div className="m-3">
             <div className="mb-3">
-                <Button className="me-2" onClick={() => {loadReservations(props.token, setRes)}}>
+                <Button className="me-2" onClick={() => {loadReservations(props.token, setRes);getSolde(props.token, props.username, setSolde)}}>
                         {"Rafraichir"}
                     </Button>
                 {isOpen ? <AddReservation token={props.token}/> : 
