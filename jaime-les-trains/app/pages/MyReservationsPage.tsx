@@ -3,13 +3,18 @@ import { Button, Card, Form, InputGroup } from "react-bootstrap";
 import { authProps } from "../page";
 import internal from "stream";
 
-export function MyReservationsPage( {...props}: authProps) {
+interface MyReservationsPageProps {
+    token: string
+    username: string
+}
+
+export function MyReservationsPage( {...props}: MyReservationsPageProps) {
 
     const [res, setRes] = useState<Reservation[]>([])
     const [isOpen, setIsOpen] = useState(false)
+    const [solde, setSolde] = useState(0)
 
-    useEffect(() => loadReservations(props.token, setRes), []);
-    console.log(res)
+    useEffect(() => {loadReservations(props.token, setRes); getSolde(props.token, props.username, setSolde)}, []);
 
     return (
         <div className="m-3">
@@ -24,9 +29,12 @@ export function MyReservationsPage( {...props}: authProps) {
                 }
             </div>
             <Card className="p-2 mb-2">
-                <Card.Title>
-                    {"Mes Reservations"}
-                </Card.Title>
+                <div className="d-flex justify-content-between">
+                    <Card.Title>
+                        {"Mes Reservations"}
+                    </Card.Title>
+                    <p>{"Votre solde: " + solde + "$"}</p>
+                </div>
                 <Card.Body>
                     {res.length == 0 ? 
                         <p>{"Vous n'avez aucune reservation"}</p> :
@@ -39,11 +47,11 @@ export function MyReservationsPage( {...props}: authProps) {
 
 function ReservationComponent({...props}: {res: Reservation}) {
     return (
-        <Card className="p-1 mb-2">
-            <Card.Title className="mb-0">
-                <p>{"Reservation #" + props.res.id}</p>
-            </Card.Title>
-            <Card.Body className="p-1 d-flex justify-content-between">
+        <Card className="mb-4">
+            <Card.Header className="mb-0">
+                <Card.Title>{"Reservation #" + props.res.id}</Card.Title>
+            </Card.Header>
+            <Card.Body className="m-2 p-1 d-flex justify-content-between">
                 <div>
                     <p className="mb-1">{"Nom de la compagnie: " + props.res.company_id}</p>
                     <p className="mb-1">{"Date: " + props.res.date}</p>
@@ -57,6 +65,26 @@ function ReservationComponent({...props}: {res: Reservation}) {
     )
 }
 
+function getSolde(token: string, name: string, callbk: Dispatch<SetStateAction<number>>) {
+        const PATH = 'https://equipe500.tch099.ovh/projet6/api/user/'+name+'/solde'
+
+        const requestOptions = {
+            method: "GET",
+            headers: { 'Authorization': token},
+            };
+            fetch(PATH, requestOptions)
+            .then(response => {
+                if (!response.ok) return null;
+                else return response.json()
+            })
+            .then(data => {
+                if (data) {
+                    callbk(data.solde)
+                } else {
+                return []
+                }
+            });
+    }
 function loadReservations(token: string, callbk: Dispatch<SetStateAction<Reservation[]>>) {
         const PATH = 'https://equipe500.tch099.ovh/projet6/api/list_reservations'
         

@@ -11,14 +11,15 @@ import { MyReservationsPage } from "./pages/MyReservationsPage";
 export default function Home() {
 
   const [token, setToken] = useState("");
+  const [user, setUser] = useState("");
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage fcttoken={setToken}/>} />
+        <Route path="/" element={<LoginPage fcttoken={setToken} fctuser={setUser}/>} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/main" element={<Trains token={token}/>} />
-        <Route path="/dashboard" element={<Reservations token={token}/>} />
+        <Route path="/dashboard" element={<Reservations token={token} username={user}/>} />
       </Routes>
     </BrowserRouter> 
   )
@@ -26,6 +27,10 @@ export default function Home() {
 
 export interface authProps {
   token: string
+}
+
+export interface MyReservationsPageProps extends authProps {
+  username: string
 }
 
 function Trains( {...props}: authProps ) {
@@ -37,11 +42,11 @@ function Trains( {...props}: authProps ) {
   )
 }
 
-function Reservations( {...props}: authProps ) {
+function Reservations( {...props}: MyReservationsPageProps ) {
   return (
     <>
       <Navigation />
-      <MyReservationsPage token={props.token} />
+      <MyReservationsPage token={props.token} username={props.username}/>
     </>
   )
 }

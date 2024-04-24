@@ -3,11 +3,11 @@
 @tailwind utilities; */
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
-:root {
+/*:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-}
+}*/
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -18,15 +18,11 @@
 }
 
 body {
+  background-image: url(https://cdn.discordapp.com/attachments/1209935466275676223/1232501943998615604/b8fa1f6f-cb3f-480b-b220-aebb7c707aa4.jpg?ex=6629b062&is=66285ee2&hm=8daae06a02a00af8e802033f4d34e6c16557bd48a02c3ff8ca63bf3ae12e8f88&);
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-    height: 100vh;
-    width: 100vw;
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
 }
 
 /* @layer utilities {

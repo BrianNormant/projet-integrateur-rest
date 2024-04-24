@@ -7,7 +7,7 @@ let buffer_trains: Train[] = []
 
 export function MyTrainsPage( {...props}: authProps ) {
 
-    const [trains, setTrains] = useState<Train[]>([]);
+    const [trains, setTrains] = useState<SimpleTrain[]>([]);
     //const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => loadTrains(props.token, buffer_trains, setTrains), []);
@@ -31,7 +31,7 @@ export function MyTrainsPage( {...props}: authProps ) {
                 <Card.Body>
                     {trains.length == 0 ? 
                     <p>{"Vous n'avez aucun train actuellement en fonctionnement"}</p> :
-                    trains.map((x, i) => <TrainComponent key={i} train={x}/>)}
+                    trains.map((x, i) => <TrainComponent key={i} train={x} token={props.token}/>)}
                 </Card.Body>
             </Card>
             
@@ -39,7 +39,7 @@ export function MyTrainsPage( {...props}: authProps ) {
     )
 }
 
-export function loadTrains(token: string, buffer: Train[], callbk: Dispatch<SetStateAction<Train[]>>) {
+export function loadTrains(token: string, buffer: Train[], callbk: Dispatch<SetStateAction<SimpleTrain[]>>) {
     const PATH = 'https://equipe500.tch099.ovh/projet6/api/trains'
     
       const requestOptions = {
@@ -53,17 +53,19 @@ export function loadTrains(token: string, buffer: Train[], callbk: Dispatch<SetS
         })
         .then(data => {
           if (data) {
-            let trains: Train[] = []
+            data.filter((x: { rail_id: any; }) => x.rail_id)
+            callbk(data)
+            /*let trains: Train[] = []
             data.map((x: { rail_id: any; id: number; }, i: number) => {
                     if (x.rail_id) addTrainData(x.id, token, trains, i==data.length-1, callbk)
-            })
+            })*/
           } else {
             return []
           }
         });
     }
 
-function addTrainData(trainid: number, token: string, buffer: Train[], last:boolean, callbk: Dispatch<SetStateAction<Train[]>>) {
+function addTrainData(trainid: number, token: string, callbk: Dispatch<SetStateAction<Train|null>>) {
     const PATH = 'https://equipe500.tch099.ovh/projet6/api/train/'+trainid+'/details'
     
       const requestOptions = {
@@ -77,14 +79,11 @@ function addTrainData(trainid: number, token: string, buffer: Train[], last:bool
         })
         .then(data => {
           if (data) {
-            buffer.push(data)
-            return buffer
+            callbk(data)
           } else {
             return []
           }
-        }).then(
-            data => {if (last) callbk(data)}
-        ).catch(() => console.log("nuh uh"));
+        }).catch(() => console.log("nuh uh"));
     }
 
 interface AddTrainProps {
@@ -96,6 +95,12 @@ interface StationDetail {
     name: string,
     pos_x: string,
     pos_y: string
+}
+
+interface SimpleTrain {
+    id: number,
+    rail_id: number,
+    pos: number
 }
 
 function AddTrain( {...props}: AddTrainProps ) {
@@ -165,30 +170,31 @@ function OptionComponent( {...props}: {x: StationDetail} ) {
 }
 
 interface TrainComponentProps {
-    train: Train
+    train: SimpleTrain
+    token: string
 }
 
 function TrainComponent( {...props}: TrainComponentProps) {
 
+    const [dTrain, setDTrain] = useState<Train|null>(null)
     const {height, width} = useWindowDimensions();
-    //Note - le map ici assume que props.train.route.path est coherent relativement a props.train.route.destination
-    //       cad on assume que connection2 de l'element x de route est le meme que l'element x+1 de route
-    //       et que connection 2 du dernier element de route est le meme que la destination finale
+    
+    useEffect(() => addTrainData(props.train.id, props.token, setDTrain), [])
 
-    //Note - On assume ici que chaque rail est traverse au maximum une seule fois
-    let currentTrackIndex: number = 0;
-    console.log(props.train)
-    props.train.route.forEach((x, i) => x.name == props.train.next_station.name ? currentTrackIndex = i : "")
+    if (dTrain) {
+        let currentTrackIndex: number = 0;
+        dTrain.route.forEach((x, i) => x.name == dTrain.next_station.name ? currentTrackIndex = i : "")
 
-    let trackWidth: number = (width-150)/(props.train.route.length-1);
+        let trackWidth: number = (width-150);
 
-    return (
-        <div>
-            <div className="d-flex justify-content-between">
-                {props.train.route.map((x, i) => <StationComponent key={i} noTrack={i==props.train.route.length-1} stationName={x.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={i==currentTrackIndex ? props.train.pos/100 * trackWidth : (i < currentTrackIndex ? trackWidth : 0)}/>)}
+        return (
+            <div>
+                <div className="d-flex justify-content-between">
+                    {dTrain.route.map((x, i) => <StationComponent key={i} noTrack={i!=0} stationName={x.name} tracklength={trackWidth} stationPassed={i<=currentTrackIndex} trackStatus={((currentTrackIndex+ (currentTrackIndex==dTrain.route.length-1 ? 0 : (dTrain.pos/100)))/(dTrain.route.length-1)) * trackWidth}/>)}
+                </div>
             </div>
-        </div>
-    )
+        )
+    } else return <></>
 }
 
 interface StationComponentProps {

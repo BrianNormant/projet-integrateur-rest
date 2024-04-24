@@ -5,23 +5,25 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface LoginPageProps {
   fcttoken: Dispatch<SetStateAction<string>>
+  fctuser: Dispatch<SetStateAction<string>>
 }
   
 export function LoginPage( {...props}: LoginPageProps ) {
 
   //States
-  const [firstPass, setFirstPass] = useState(true)
+  const [validated, setValidated] = useState(false) 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
 
   function onSubmitPressed() {
-    setFirstPass(false)
+    setValidated(true)
     if (username && password) getToken(username, password, setToken)
   }
 
   if (token.length > 4) {
     props.fcttoken(token)
+    props.fctuser(username)
     return (<Navigate to="/main" />)
   }
 
@@ -33,13 +35,13 @@ export function LoginPage( {...props}: LoginPageProps ) {
           <Card.Title>{"Connexion a votre compte"}</Card.Title>
         </Card.Header>
         <Card.Body>
-          <Form>
+          <Form noValidate validated={validated}>
             <Form.Label className="mb-1">{"Nom d'utilisateur"}</Form.Label>
-            {!firstPass && !username ? <p>{"Vous devez entrer un nom d'utilisateur"}</p> : ""}
-            <Form.Control className="w-100 mb-2" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)}></Form.Control>
+            <Form.Control required className="w-100 mb-2" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)}></Form.Control>
+            <Form.Control.Feedback type="invalid">{"Vous devez entrer un nom d'utilisateur"}</Form.Control.Feedback>
             <Form.Label className="mb-1">{"Mot de passe"}</Form.Label>
-            {!firstPass && !password ? <p>{"Vous devez entrer un mot de passe"}</p> : ""}
-            <Form.Control className="w-100 mb-2" type="text" placeholder="Password" onChange={e => setPassword(e.target.value)}></Form.Control>
+            <Form.Control required className="w-100 mb-2" type="text" placeholder="Password" onChange={e => setPassword(e.target.value)}></Form.Control>
+            <Form.Control.Feedback type="invalid">{"Vous devez entrer un mot de passe"}</Form.Control.Feedback>
             {/*<Form.Check type="checkbox" label="Se souvenir de moi" />*/}
             {token == "n/a" ? <p>{"Votre nom d'utilisateur ou mot de passe est incorrect"}</p> : ""}
             <Button variant="primary" className="mx-2 mt-2" onClick={e => onSubmitPressed()}>{"Connexion"}</Button>
